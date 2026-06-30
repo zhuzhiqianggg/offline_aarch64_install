@@ -1,0 +1,260 @@
+[2026-06-25 16:18:37] 查询最新稳定版本
+[2026-06-25 16:18:40] 版本已锁定:
+ARCH=arm64
+RPM_ARCH=aarch64
+VERSION_POLICY=latest-stable-only
+ALLOW_PRERELEASE=false
+SEALOS_VERSION=v5.1.1
+KUBERNETES_VERSION=v1.33.6
+CALICO_VERSION=v3.28.1
+INGRESS_NGINX_VERSION=controller-v1.15.1
+KUBOARD_VERSION=v3
+HELM_VERSION=v3.21.2
+VERSION_NOTES=latest stable releases only; prerelease filtered; upstream_kubernetes=v1.36.2; labring_kubernetes_image=v1.33.6
+[2026-06-25 16:18:40] 下载 sealos: https://github.com/labring/sealos/releases/download/v5.1.1/sealos_5.1.1_linux_arm64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  8 67.1M    8 5822k    0     0  52.2M      0  0:00:01 --:--:--  0:00:01 52.2M 15 67.1M   15 10.3M    0     0  9541k      0  0:00:07  0:00:01  0:00:06 4745k 24 67.1M   24 16.7M    0     0  8126k      0  0:00:08  0:00:02  0:00:06 5653k 34 67.1M   34 22.9M    0     0  7575k      0  0:00:09  0:00:03  0:00:06 5907k 43 67.1M   43 29.1M    0     0  7264k      0  0:00:09  0:00:04  0:00:05 6005k 52 67.1M   52 35.0M    0     0  7036k      0  0:00:09  0:00:05  0:00:04 6023k 60 67.1M   60 40.7M    0     0  6818k      0  0:00:10  0:00:06  0:00:04 6217k 71 67.1M   71 47.6M    0     0  6865k      0  0:00:10  0:00:07  0:00:03 6335k 80 67.1M   80 53.7M    0     0  6787k      0  0:00:10  0:00:08  0:00:02 6297k 89 67.1M   89 59.9M    0     0  6741k      0  0:00:10  0:00:09  0:00:01 6310k 98 67.1M   98 65.9M    0     0  6680k      0  0:00:10  0:00:10 --:--:-- 6317k100 67.1M  100 67.1M    0     0  6705k      0  0:00:10  0:00:10 --:--:-- 6539k
+/opt/install/offline-k8s/tmp/sealos-download: gzip compressed data, max compression, original size modulo 2^32 230217216
+SealosVersion:
+  buildDate: "2025-11-17T04:16:18Z"
+  compiler: gc
+  gitCommit: 1e312ad2c
+  gitVersion: 5.1.1
+  goVersion: go1.23.12
+  platform: linux/arm64
+
+[2026-06-25 16:18:53] 下载 helm: https://get.helm.sh/helm-v3.21.2-linux-arm64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 67 15.0M   67 10.0M    0     0  7397k      0  0:00:02  0:00:01  0:00:01 7396k100 15.0M  100 15.0M    0     0  7953k      0  0:00:01  0:00:01 --:--:-- 7950k
+version.BuildInfo{Version:"v3.21.2", GitCommit:"125963406833fe0525be91f46c8b5b0f22fb9e32", GitTreeState:"clean", GoVersion:"go1.26.4"}
+[2026-06-25 16:18:56] 下载 ingress-nginx manifest
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 16384  100 16384    0     0  55974      0 --:--:-- --:--:-- --:--:-- 56109
+[2026-06-25 16:18:56] 下载 Kuboard manifest
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  8768  100  8768    0     0  20374      0 --:--:-- --:--:-- --:--:-- 20343
+[2026-06-25 16:18:56] 拉取 Kubernetes cluster image: docker.io/labring/kubernetes:v1.33.6
+f972b3a3bc29aa1c37c2e424ab68acb27bfe806689ba48bf50e5a523a7d6cdb7
+[2026-06-25 16:18:56] 拉取 Calico cluster image: docker.io/labring/calico:v3.28.1
+3987e6eb5d874d3ead31feeddbc6bab35b6d65e07084584906f10b1a749353ca
+[2026-06-25 16:18:56] 导出 sealos cluster images
+Getting image source signatures
+Copying blob sha256:b6050a2a49f0e596f199990c23eab57cba750b4cc8fa396b960d57de7117abca
+Copying blob sha256:64d16c7ad7d784b1ed5686a3a8575de78b74c5c3a33ddae3d6ef325e1b573365
+Copying blob sha256:13bc0e7c1220277a3cfd243ef4ff2b1ed18e26efedd93fe13e7bf4ad8f82ac65
+Copying blob sha256:2c55d7df0331ba54518843d1cde445b5ec92a23c6435398c26d85b800b33ffac
+Copying config sha256:f972b3a3bc29aa1c37c2e424ab68acb27bfe806689ba48bf50e5a523a7d6cdb7
+Writing manifest to image destination
+Storing signatures
+Getting image source signatures
+Copying blob sha256:3f8e88170d2a55804cd53a22c56b57607e994bb41225121f2c239efa51fade39
+Copying config sha256:3987e6eb5d874d3ead31feeddbc6bab35b6d65e07084584906f10b1a749353ca
+Writing manifest to image destination
+Storing signatures
+[2026-06-25 16:19:14] 镜像清单:
+eipwork/etcd-host:3.4.16-2
+eipwork/kuboard:v3
+registry.k8s.io/ingress-nginx/controller:v1.15.1
+registry.k8s.io/ingress-nginx/controller:v1.15.1@sha256:594ceea76b01c592858f803f9ff4d2cb40542cae2060410b2c95f75907d659e1
+registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9@sha256:01038e7de14b78d702d2849c3aad72fd25903c4765af63cf16aa3398f5d5f2dd
+[2026-06-25 16:19:14] 使用 sealos 拉取并导出应用镜像: eipwork/etcd-host:3.4.16-2
+Resolving "eipwork/etcd-host" using unqualified-search registries (/etc/containers/registries.conf)
+Trying to pull docker.io/eipwork/etcd-host:3.4.16-2...
+Getting image source signatures
+Copying blob sha256:2ae710cd8bfef4545fa3a6dc274d6b7a991ca379cdaa3cdf460d5cb5840a3c88
+Copying blob sha256:d462aa3453675bb1f9a271a72cc72a53e628521a7d0e94b720bd07f9ca4962dc
+Copying blob sha256:0f8b424aa0b96c1c388a5fd4d90735604459256336853082afb61733438872b5
+Copying blob sha256:d557676654e572af3e3173c90e7874644207fda32cd87e9d3d66b5d7b98a7b21
+Copying blob sha256:d10f96ed96078c646b4bbea25eebfbc7fe4276efe46b3141b52a31a5a68d829e
+Copying blob sha256:c8022d07192eddbb2a548ba83be5e412f7ba863bbba158d133c9653bb8a47768
+Copying blob sha256:d858cbc252ade14879807ff8dbc3043a26bbdb92087da98cda831ee040b172b3
+Copying blob sha256:1069fc2daed1aceff7232f4b8ab21200dd3d8b04f61be9da86977a34a105dfdc
+Copying blob sha256:b40161cd83fc5d470d6abe50e87aa288481b6b89137012881d74187cfbf9f502
+Copying blob sha256:5318d93a3a6582d0351c833fa3cf04ab41352b2e6c77c9ec3d330581eb267683
+Copying blob sha256:307c1adadb60e6e9b8aca553ec620d77fedc112737cc54e9ee73ac165e7f3cbc
+Copying blob sha256:f9b3c65df7927151d4dd14d0bc7c753487a03274371930cdbf7e38ebcb94c8bf
+Copying blob sha256:5709b4a82c350814a611696b99cd00ce94afeab11b5070ce4710ac737bb37ccb
+Copying blob sha256:d5372e382b076429c1e684f6fb989e30939b2419513df2fa832f85b11eafabc4
+Copying blob sha256:9c3b5253dddcd8733a08b83cf8d9e961ce42e57229d894b07fbfaada667b9657
+Copying blob sha256:7a57323f7551e2db9917eb6ed747ac8cdeb51cd931736d19c3a4b1ac7707998b
+Copying blob sha256:905db4aedfffae82cd5bc22a1f739702e2abd82336066ac8cd733e61a1c3fac8
+Copying config sha256:4921f498edac5a6158a961e918dba00305acc51675a742d8037a54f7abe9c1dd
+Writing manifest to image destination
+Storing signatures
+4921f498edac5a6158a961e918dba00305acc51675a742d8037a54f7abe9c1dd
+Getting image source signatures
+Copying blob sha256:c656415fb81c800f0d72fc0249314587debcad9b185edf93b49bbc877472490b
+Copying blob sha256:577c8ee06f39e2bc276615f1058fa40081255ce5e2f072df4875e27868de5660
+Copying blob sha256:9ed498e122b248a801130d052c25418381ee7bf215cdf7990965bae0dc37dcc2
+Copying blob sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368
+Copying blob sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc
+Copying blob sha256:ac805962e47900b616b2f4b4584a34ac7b07d64ac1fd2c077478cf65311addcc
+Copying blob sha256:bbb6cacb8c82e4da4e8143e03351e939eab5e21ce0ef333c42e637af86c5217b
+Copying blob sha256:2a92d6ac9e4fcc274d5168b217ca4458a9fec6f094ead68d99c77073f08caac1
+Copying blob sha256:1a73b54f556b477f0a8b939d13c504a3b4f4db71f7a09c63afbc10acb3de5849
+Copying blob sha256:c048279a7d9f8e94b4c022b699ad8e8a0cb08b717b014ce4af15afaf375a6ac2
+Copying blob sha256:2388d21e8e2b74e055216652e6af384768e97513ad568e10c27bacec389b7f0a
+Copying blob sha256:3a9329101a7c2083d09b54dcff88bd6ccd555fef6976dbcf372fb705ffd54e1d
+Copying blob sha256:03cea528a1ca211307ea3deb268de87f6c3f0375b3476f8f8aded9692032f936
+Copying blob sha256:577a601de835af6acd849e777539ef11ae94db7eed2e994e13158e86725e6f65
+Copying blob sha256:1d3f72e3bee8ff2b60c9dab61e9ce74b06ba94a08600263799db9f00785eed25
+Copying blob sha256:30be3b5c75d7f25384d1130a7da822680adfeb89713f8316212bde08e01d3d73
+Copying blob sha256:08acffebd2d27ae60092ac45e4a0a7b1e11c855302ce0dbc985c07b3e5f0d459
+Copying config sha256:4921f498edac5a6158a961e918dba00305acc51675a742d8037a54f7abe9c1dd
+Writing manifest to image destination
+Storing signatures
+[2026-06-25 16:19:21] 使用 sealos 拉取并导出应用镜像: eipwork/kuboard:v3
+Resolving "eipwork/kuboard" using unqualified-search registries (/etc/containers/registries.conf)
+Trying to pull docker.io/eipwork/kuboard:v3...
+Getting image source signatures
+Copying blob sha256:3ab06028a15d3d9bc2867a4fd44379c15bdbf0e6f582db7033f8ca5285d24910
+Copying blob sha256:e41b8b3c08c66f55e6a40f58f0570ff7cdbf60470390d45f2937893eb4c4a715
+Copying blob sha256:64c6a02c5abdbff6845f9919645da1313d708984163c7bca8263aeac8d2e4264
+Copying blob sha256:f3ab39bd8bd762222f467015506036e484e54da43f76a66fb760710675597d22
+Copying blob sha256:29adbdf85dcc1969df9aac04eb0f06439aba7fe9a38ecfa310217955837a52ae
+Copying blob sha256:7e4118c15ad34b8ca5dd02104d8dd699abc308824defaaa1dc2bacb65a6fb33d
+Copying blob sha256:9369f120d8c37951300b6d8c939496aea5b839a7820d939059bd88f59402a2ea
+Copying blob sha256:86e70cc44d731b45dcb86ddfc252a1328de2d9b217aef8f9762426c91cbe989c
+Copying blob sha256:4d8c59b6edf31fa16d8a4153298e12f0734311d569c69c7b3175122a28ff1158
+Copying blob sha256:69b14b8949eae1da019509cc88f542c5921831f868aae2d13ae6442374f15563
+Copying blob sha256:aacce1c922347387defb1b0c7378c53e91de0aa8eb7f157426fc77ea695122ca
+Copying blob sha256:a62d898352ab1410eaf721df8e089ebe4d964ec9584f2c695012b7d9d25ac1d5
+Copying blob sha256:9c66134aa96d6ddce823064e354bae0cee8034db38cf6647b631ce9ac0edfb87
+Copying blob sha256:b8449700846067987939dca4b5f167c10e7cc9ffd243a9102920513cfd4cb601
+Copying blob sha256:c8187db0856ed8bd22bdef2d8cedfb555e86bdced588413c9c6e264dcb304cf7
+Copying blob sha256:a4c31ddb2d38c97dc31b9ab7c287024ef060dc47d2970299f6355e913c2ed120
+Copying blob sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+Copying blob sha256:7d3342e5d3fe4955527a41a5503789ed62ef72d41c39e8ee82ab38f35a21aac7
+Copying config sha256:a4e145905951581e2e9dd5abaf78c2a1193577a3f96f1816fe363036488b1a84
+Writing manifest to image destination
+Storing signatures
+a4e145905951581e2e9dd5abaf78c2a1193577a3f96f1816fe363036488b1a84
+Getting image source signatures
+Copying blob sha256:f0f88543aae73970d1e6e65f0a06784c6c402f8b7bf9b907c45d549c029aa4f9
+Copying blob sha256:9329e0c4e93e69a7726402ec0f6d1a3f883b61b445eec1b04b5e0c7ea2d193be
+Copying blob sha256:995f26148c347e985c2df09992243a6ed3317b22a0ad5ad90f39ef48a9ebcf83
+Copying blob sha256:d363e3add720b022ce9ce22efd1f4aaaa07fde84325cdb6dc9bf7f66d714894c
+Copying blob sha256:e53beb0f348334e1d3821104fa12ab8e6b0460e54c0bef8d4396c616cd650858
+Copying blob sha256:053d0cfff9aca27546c521bdc493c98a7746ccc41a298a185b5d8c9b9053da0d
+Copying blob sha256:a1e5fcd14962eddb76cc020e421ac0e009ee70868ab452e3af1585fd5fdc42f3
+Copying blob sha256:d92ba3d40580c6a67132528a04d23e008207c05a30e1ff7de8ba4b4d48b74990
+Copying blob sha256:342ec9d5eb1ac6a60cd773a42e732306142eef0c8869d984a27fa9c47fca2ca8
+Copying blob sha256:fbcf4fdef537229f9ff581bdc51a4d14616363a9325b04aa23945731b073676c
+Copying blob sha256:480d5785232f23c2f00e5fc622b646d3fa1434868f10b793ed9ae3c0ccd18cc1
+Copying blob sha256:378eeae3e764056203b3e61064d6d45a226e963de6142ed98ecafc036dc589de
+Copying blob sha256:9eedcdf1afb02340ee1306689090b4e97ecfc4133fe4994c16579f1018c57923
+Copying blob sha256:9fe01d05e0594b814ce792ac0a99df124a4af3078a4f94272242a3b847c3c4e7
+Copying blob sha256:6c71d3881b799a838476e25e84d848534546f73eaeeea74828b9d5bc3ba3827b
+Copying blob sha256:ca6207451aa3d429b2ace9905a5b6634340a446877c5553673490c31289a68a1
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:f9b0051ca5cfb782e06832f39b3a780357f447a46d074edcf66774d291b36806
+Copying config sha256:a4e145905951581e2e9dd5abaf78c2a1193577a3f96f1816fe363036488b1a84
+Writing manifest to image destination
+Storing signatures
+[2026-06-25 16:20:03] 使用 sealos 拉取并导出应用镜像: registry.k8s.io/ingress-nginx/controller:v1.15.1
+Trying to pull registry.k8s.io/ingress-nginx/controller:v1.15.1...
+Getting image source signatures
+Copying blob sha256:3fd0b93124cb94795484ad3dff0595434ebf9782dfcd4c0ea47a24b17778b91d
+Copying blob sha256:5ef54d57db90962f3a55eb66b9c7581467de7d4a24e08913cd4752020c1c7005
+Copying blob sha256:d8ad8cd72600f46cc068e16c39046ebc76526e41051f43a8c249884b200936c0
+Copying blob sha256:40ffc7478c384d6a7c8132ed727281c50c301acbc9e8e8b6c1c87e2295768222
+Copying blob sha256:2da47b65618077765af4fd14446856af0b29ae59d5398a26254d85e1dc60a7af
+Copying blob sha256:912305fb020ef398569a92b10ac777c45977374912096c712ce253d67443d009
+Copying blob sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+Copying blob sha256:6dcb4e57c2183eb6e20c756ae9bdad97808460972dfc24af87a1f30365d79e41
+Copying blob sha256:d4ca4f133cb5118fad20f6b74def64755d178b9f1b87b383a736e49ff45a9363
+Copying blob sha256:7482fff2b62d5c4753a2c950e58cf366c00f5def58b56723f0919446d132cd0d
+Copying blob sha256:323ab4aa4ca938d8a67d1c0a3589b9f1f27602f214a4115afdb2842a48146b68
+Copying blob sha256:9405ff76c851f7e39bdf578ffc58a5363e587b4f76df84506b0abd6845979397
+Copying blob sha256:942cb397e5dbab6448ca5b46291e3c24e8449ff75e6e84be48f809b5f13c4c4c
+Copying blob sha256:d0931119e05d8f5098da588e3b2f752656191e49617657d1d8c5e71fb6b933f5
+Copying blob sha256:44a6def5197ddb99c69f07d29f7289250a1ff571f51f43bfb26a468a38b44f95
+Copying config sha256:fd161fb3d80d4deac8c6606c8397b352aac49beb55044bc0b32a5f7e2812f84c
+Writing manifest to image destination
+Storing signatures
+fd161fb3d80d4deac8c6606c8397b352aac49beb55044bc0b32a5f7e2812f84c
+Getting image source signatures
+Copying blob sha256:45f3ea5848e8a25ca27718b640a21ffd8c8745d342a24e1d4ddfc8c449b0a724
+Copying blob sha256:9f3d1c080f5a29a04fdebe7060d920b26d43d4b7196a5a35afbb8555134ceafe
+Copying blob sha256:ad4f6f410be59b8722536662a7d9ff042e818c081d0d3a237415ec8670336e80
+Copying blob sha256:167be7087cff712dcd918a998c5b011a1d660963ef36283efb799653ef5f5971
+Copying blob sha256:7a7155c9a0812ec71da07cb50c59b336aa1fc91518cf0a95dec9c570a2fabe6e
+Copying blob sha256:7cd7b29580b224ae586a581db2dfceec1c58ccb8a7060b2925ea6c4b26b682d6
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:cc0f8e5c99668a53a8b13fa1c0697e10d4d206e44d13647046c730f7fe42b8a6
+Copying blob sha256:3fa31c0d82e5dc697c09507a3a1ca7427be67b969ab6ce17132ff52a2468de66
+Copying blob sha256:1cd4ac6680ca3e1e1823055acda4995f329b40181521fa7ccd7da0d41e5f7b8b
+Copying blob sha256:a01d9a9c9bdf9fa4ae7fba5e75a161354367aef1fba69e646362ab82b3d10477
+Copying blob sha256:82a8c19e50e8bf996bc6a7f0bf6d0a42c31ef0460b42f737f5195aa5477f9fb6
+Copying blob sha256:95b1154dea205cde3f27c9e467fcbf386910fbd5a320f24b0fef41eae575001c
+Copying blob sha256:f6693a5ada8bb783a341f3c4bbc5599993f0f4914481dc6fce3e9ae734d1d97d
+Copying blob sha256:433b62723d81c9705bd13c600d44a9e87c9657d28591fbb67e35bd251d486784
+Copying config sha256:fd161fb3d80d4deac8c6606c8397b352aac49beb55044bc0b32a5f7e2812f84c
+Writing manifest to image destination
+Storing signatures
+[2026-06-25 16:20:29] 使用 sealos 拉取并导出应用镜像: registry.k8s.io/ingress-nginx/controller:v1.15.1@sha256:594ceea76b01c592858f803f9ff4d2cb40542cae2060410b2c95f75907d659e1
+fd161fb3d80d4deac8c6606c8397b352aac49beb55044bc0b32a5f7e2812f84c
+Getting image source signatures
+Copying blob sha256:45f3ea5848e8a25ca27718b640a21ffd8c8745d342a24e1d4ddfc8c449b0a724
+Copying blob sha256:9f3d1c080f5a29a04fdebe7060d920b26d43d4b7196a5a35afbb8555134ceafe
+Copying blob sha256:ad4f6f410be59b8722536662a7d9ff042e818c081d0d3a237415ec8670336e80
+Copying blob sha256:167be7087cff712dcd918a998c5b011a1d660963ef36283efb799653ef5f5971
+Copying blob sha256:7a7155c9a0812ec71da07cb50c59b336aa1fc91518cf0a95dec9c570a2fabe6e
+Copying blob sha256:7cd7b29580b224ae586a581db2dfceec1c58ccb8a7060b2925ea6c4b26b682d6
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:cc0f8e5c99668a53a8b13fa1c0697e10d4d206e44d13647046c730f7fe42b8a6
+Copying blob sha256:3fa31c0d82e5dc697c09507a3a1ca7427be67b969ab6ce17132ff52a2468de66
+Copying blob sha256:1cd4ac6680ca3e1e1823055acda4995f329b40181521fa7ccd7da0d41e5f7b8b
+Copying blob sha256:a01d9a9c9bdf9fa4ae7fba5e75a161354367aef1fba69e646362ab82b3d10477
+Copying blob sha256:82a8c19e50e8bf996bc6a7f0bf6d0a42c31ef0460b42f737f5195aa5477f9fb6
+Copying blob sha256:95b1154dea205cde3f27c9e467fcbf386910fbd5a320f24b0fef41eae575001c
+Copying blob sha256:f6693a5ada8bb783a341f3c4bbc5599993f0f4914481dc6fce3e9ae734d1d97d
+Copying blob sha256:433b62723d81c9705bd13c600d44a9e87c9657d28591fbb67e35bd251d486784
+Copying config sha256:fd161fb3d80d4deac8c6606c8397b352aac49beb55044bc0b32a5f7e2812f84c
+Writing manifest to image destination
+Storing signatures
+[2026-06-25 16:20:34] 使用 sealos 拉取并导出应用镜像: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9@sha256:01038e7de14b78d702d2849c3aad72fd25903c4765af63cf16aa3398f5d5f2dd
+Trying to pull registry.k8s.io/ingress-nginx/kube-webhook-certgen@sha256:01038e7de14b78d702d2849c3aad72fd25903c4765af63cf16aa3398f5d5f2dd...
+Getting image source signatures
+Copying blob sha256:c172f21841dff4c8cf45cde46589c1c2616cefe7e819965e92e6d3475c428aa0
+Copying blob sha256:2780920e5dbfbe103d03a583ed75345306e572ec5a48cb10361f046767d9f29a
+Copying blob sha256:b4e6f1bfce0a1fba2b5421041552f4a897aada9cd5680926580f9e2c6247a7ae
+Copying blob sha256:b4242723c53fe4e094eb78569a2c15b6aafb8eb42aa9c3c2666130654a316ae2
+Copying blob sha256:d6b1b89eccacc15c2420b2776d72c1dae334a00805ed9af54bf2f71e4d536f28
+Copying blob sha256:fa8ae93e2b3a7478248483e942ff665efa7219c6cd72d7a03c775372076e98dc
+Copying blob sha256:7c12895b777bcaa8ccae0605b4de635b68fc32d60fa08f421dc3818bf55ee212
+Copying blob sha256:3214acf345c0cc6bbdb56b698a41ccdefc624a09d6beb0d38b5de0b2303ecaf4
+Copying blob sha256:52630fc75a18675c530ed9eba5f55eca09b03e91bd5bc15307918bbc1a7e7296
+Copying blob sha256:dd64bf2dd177757451a98fcdc999a339c35dee5d9872d8f4dc69c8f3c4dd0112
+Copying blob sha256:b839dfae01f66e15c6a8b63520557ed315bdfe036342fa7a0c537259f10d7a9a
+Copying blob sha256:ebddc55facdc6b1f7e0f30816a5fc7cc62f38abdf76c0a8b0a0ce52085754795
+Copying blob sha256:bdfd7f7e5bf6fc27e70b59101db21c3d8284d283884419dd5fe7020583bb79ca
+Copying blob sha256:342961398a0ae796732e3eed94ffbf10d807f355b4dc0c1e5ded39105e92537e
+Copying config sha256:53a0bbd6100e8f7ee6b523312123fac94594172ef7dfaba32fc79b609e573e1d
+Writing manifest to image destination
+Storing signatures
+53a0bbd6100e8f7ee6b523312123fac94594172ef7dfaba32fc79b609e573e1d
+Getting image source signatures
+Copying blob sha256:82c60ccaf916322916d16bcdb4223f93acc1f68e2087dba4ddf64990b1dc27fb
+Copying blob sha256:621c35e751a51a9a9dc3e80aa0b7fe8be2a93402ea6ccd307d30852cd7776cda
+Copying blob sha256:ac2a91ec876dfaf2145e14b0b43ce6b3ea3d4edb28a0df9d91c52f2efbb8e1a7
+Copying blob sha256:f15316efa9979a44eee43172e640630f60407180eff3d985274befd600bb227d
+Copying blob sha256:275a30dd8ce958b21daa9ad962c6fbc09f98306ee2f486b65c9075dc257b1412
+Copying blob sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368
+Copying blob sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc
+Copying blob sha256:6f1cdceb6a3146f0ccb986521156bef8a422cdbb0863396f7f751f575ba308f4
+Copying blob sha256:bd3cdfae1d3fdd83a2231d608969b38b82349777c2fff9a7c12d54f8ac5c9b38
+Copying blob sha256:4cde6b0bb6f50a5f255eef7b2a42162c661cf776b803225dcac9a659e396bb6b
+Copying blob sha256:ad51d0769d16ba578106a177987dfe3d2e02c1668c852b795b2f6b024068242a
+Copying blob sha256:187cfc6d1e3e8a40a5e64653bcd3239c140807dcf1c09e48021178705a5a6139
+Copying blob sha256:5fd2536c39c0700be8b7b4344e375196da2f126842fd8ede66996a18860a3890
+Copying blob sha256:76bb7e3dc11bf3719e06a3bbbe737d50080fea23eea81de8d00c504dd86cc278
+Copying config sha256:53a0bbd6100e8f7ee6b523312123fac94594172ef7dfaba32fc79b609e573e1d
+Writing manifest to image destination
+Storing signatures
+[2026-06-25 16:20:45] 在线下载完成，日志: /opt/install/offline-k8s/logs/download-online-20260625161837.log

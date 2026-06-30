@@ -1,0 +1,199 @@
+2026-06-25T16:23:34+0800 INFO --- logging initialized ---
+2026-06-25T16:23:34+0800 DDEBUG timer: config: 2 ms
+2026-06-25T16:23:34+0800 DEBUG Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, repoclosure, repodiff, repograph, repomanage, reposync
+2026-06-25T16:23:34+0800 DDEBUG Cleaning up.
+2026-06-25T16:23:34+0800 INFO --- logging initialized ---
+2026-06-25T16:23:34+0800 DDEBUG timer: config: 2 ms
+2026-06-25T16:23:34+0800 DEBUG Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, repoclosure, repodiff, repograph, repomanage, reposync
+2026-06-25T16:23:34+0800 DDEBUG Cleaning up.
+2026-06-25T16:33:38+0800 INFO --- logging initialized ---
+2026-06-25T16:33:38+0800 DDEBUG timer: config: 2 ms
+2026-06-25T16:33:38+0800 DEBUG Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, repoclosure, repodiff, repograph, repomanage, reposync
+2026-06-25T16:33:38+0800 DEBUG DNF version: 4.10.0
+2026-06-25T16:33:38+0800 DDEBUG Command: dnf --setopt=logdir=/opt/install/offline-k8s/logs --setopt=cachedir=/opt/install/offline-k8s/tmp/dnf repolist 
+2026-06-25T16:33:38+0800 DDEBUG Installroot: /
+2026-06-25T16:33:38+0800 DDEBUG Releasever: 22.03LTS
+2026-06-25T16:33:38+0800 DEBUG cachedir: /opt/install/offline-k8s/tmp/dnf
+2026-06-25T16:33:38+0800 DDEBUG Base command: repolist
+2026-06-25T16:33:38+0800 DDEBUG Extra commands: ['--setopt=logdir=/opt/install/offline-k8s/logs', '--setopt=cachedir=/opt/install/offline-k8s/tmp/dnf', 'repolist']
+2026-06-25T16:33:38+0800 DDEBUG Cleaning up.
+2026-06-25T16:34:13+0800 INFO --- logging initialized ---
+2026-06-25T16:34:13+0800 DDEBUG timer: config: 2 ms
+2026-06-25T16:34:13+0800 DEBUG Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, repoclosure, repodiff, repograph, repomanage, reposync
+2026-06-25T16:34:13+0800 DEBUG DNF version: 4.10.0
+2026-06-25T16:34:13+0800 DDEBUG Command: dnf --setopt=logdir=/opt/install/offline-k8s/logs --setopt=cachedir=/opt/install/offline-k8s/tmp/dnf download --resolve --downloaddir=/opt/install/offline-k8s/pkgs fuse-overlayfs conntrack-tools socat ipset ipvsadm ebtables ethtool cri-tools 
+2026-06-25T16:34:13+0800 DDEBUG Installroot: /
+2026-06-25T16:34:13+0800 DDEBUG Releasever: 22.03LTS
+2026-06-25T16:34:13+0800 DEBUG cachedir: /opt/install/offline-k8s/tmp/dnf
+2026-06-25T16:34:13+0800 DDEBUG Base command: download
+2026-06-25T16:34:13+0800 DDEBUG Extra commands: ['--setopt=logdir=/opt/install/offline-k8s/logs', '--setopt=cachedir=/opt/install/offline-k8s/tmp/dnf', 'download', '--resolve', '--downloaddir=/opt/install/offline-k8s/pkgs', 'fuse-overlayfs', 'conntrack-tools', 'socat', 'ipset', 'ipvsadm', 'ebtables', 'ethtool', 'cri-tools']
+2026-06-25T16:34:13+0800 DEBUG User-Agent: constructed: 'libdnf (openEuler 22.03; generic; Linux.aarch64)'
+2026-06-25T16:34:13+0800 DEBUG repo: downloading from remote: OS
+2026-06-25T16:34:17+0800 DEBUG OS: using metadata from Wed 30 Mar 2022 04:47:17 PM CST.
+2026-06-25T16:34:17+0800 DEBUG repo: downloading from remote: everything
+2026-06-25T16:34:25+0800 DEBUG error: Status code: 504 for https://mirrors.openeuler.org/metalink?repo=22.03LTS/everything&arch=aarch64 (IP: 49.0.230.196) (https://mirrors.openeuler.org/metalink?repo=22.03LTS/everything&arch=aarch64).
+2026-06-25T16:34:31+0800 DEBUG error: Status code: 504 for https://mirrors.openeuler.org/metalink?repo=22.03LTS/everything&arch=aarch64 (IP: 49.0.230.196) (https://mirrors.openeuler.org/metalink?repo=22.03LTS/everything&arch=aarch64).
+2026-06-25T16:34:36+0800 DEBUG error: Status code: 504 for https://mirrors.openeuler.org/metalink?repo=22.03LTS/everything&arch=aarch64 (IP: 49.0.230.196) (https://mirrors.openeuler.org/metalink?repo=22.03LTS/everything&arch=aarch64).
+2026-06-25T16:34:41+0800 DEBUG error: Status code: 504 for https://mirrors.openeuler.org/metalink?repo=22.03LTS/everything&arch=aarch64 (IP: 49.0.230.196) (https://mirrors.openeuler.org/metalink?repo=22.03LTS/everything&arch=aarch64).
+2026-06-25T16:37:10+0800 DEBUG everything: using metadata from Wed 30 Mar 2022 04:56:13 PM CST.
+2026-06-25T16:37:10+0800 DEBUG repo: downloading from remote: EPOL
+2026-06-25T16:37:35+0800 DEBUG EPOL: using metadata from Wed 30 Mar 2022 04:34:04 PM CST.
+2026-06-25T16:37:35+0800 DEBUG repo: downloading from remote: debuginfo
+2026-06-25T16:38:07+0800 DEBUG debuginfo: using metadata from Wed 30 Mar 2022 04:52:38 PM CST.
+2026-06-25T16:38:07+0800 DEBUG repo: downloading from remote: source
+2026-06-25T16:38:24+0800 DEBUG source: using metadata from Wed 30 Mar 2022 04:53:48 PM CST.
+2026-06-25T16:38:24+0800 DEBUG repo: downloading from remote: update
+2026-06-25T16:39:06+0800 DEBUG update: using metadata from Fri 14 Jun 2024 09:00:57 PM CST.
+2026-06-25T16:39:06+0800 DEBUG repo: downloading from remote: update-source
+2026-06-25T16:39:17+0800 DEBUG update-source: using metadata from Fri 14 Jun 2024 09:00:58 PM CST.
+2026-06-25T16:39:17+0800 INFO Last metadata expiration check: 0:00:01 ago on Thu 25 Jun 2026 04:39:16 PM CST.
+2026-06-25T16:39:17+0800 DDEBUG timer: sack setup: 303802 ms
+2026-06-25T16:39:17+0800 DEBUG Completion plugin: Generating completion cache...
+2026-06-25T16:39:17+0800 DEBUG Completion plugin: Can't write completion cache: attempt to write a readonly database
+2026-06-25T16:39:20+0800 ERROR No package fuse-overlayfs available.
+2026-06-25T16:39:20+0800 ERROR Exiting due to strict setting.
+2026-06-25T16:39:20+0800 DDEBUG Cleaning up.
+2026-06-25T16:39:20+0800 SUBDEBUG 
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 239, in _get_packages
+    queries.append(func(pkg_spec))
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 297, in _get_query
+    raise dnf.exceptions.PackageNotFoundError(msg)
+dnf.exceptions.PackageNotFoundError: No package fuse-overlayfs available.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/site-packages/dnf/cli/main.py", line 67, in main
+    return _main(base, args, cli_class, option_parser_class)
+  File "/usr/lib/python3.9/site-packages/dnf/cli/main.py", line 106, in _main
+    return cli_run(cli, base)
+  File "/usr/lib/python3.9/site-packages/dnf/cli/main.py", line 122, in cli_run
+    cli.run()
+  File "/usr/lib/python3.9/site-packages/dnf/cli/cli.py", line 1055, in run
+    return self.command.run()
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 100, in run
+    pkgs = self._get_pkg_objs_rpms(self.opts.packages)
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 168, in _get_pkg_objs_rpms
+    pkgs = self._get_packages_with_deps(pkg_specs)
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 251, in _get_packages_with_deps
+    pkgs = self._get_packages(pkg_specs)
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 244, in _get_packages
+    raise dnf.exceptions.Error(e)
+dnf.exceptions.Error: No package fuse-overlayfs available.
+2026-06-25T16:39:20+0800 CRITICAL Error: No package fuse-overlayfs available.
+2026-06-25T16:39:32+0800 INFO --- logging initialized ---
+2026-06-25T16:39:32+0800 DDEBUG timer: config: 2 ms
+2026-06-25T16:39:32+0800 DEBUG Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, repoclosure, repodiff, repograph, repomanage, reposync
+2026-06-25T16:39:32+0800 DEBUG DNF version: 4.10.0
+2026-06-25T16:39:32+0800 DDEBUG Command: dnf --setopt=logdir=/opt/install/offline-k8s/logs --setopt=cachedir=/opt/install/offline-k8s/tmp/dnf repoquery *fuse*overlay* *overlay* 
+2026-06-25T16:39:32+0800 DDEBUG Installroot: /
+2026-06-25T16:39:32+0800 DDEBUG Releasever: 22.03LTS
+2026-06-25T16:39:32+0800 DEBUG cachedir: /opt/install/offline-k8s/tmp/dnf
+2026-06-25T16:39:32+0800 DDEBUG Base command: repoquery
+2026-06-25T16:39:32+0800 DDEBUG Extra commands: ['--setopt=logdir=/opt/install/offline-k8s/logs', '--setopt=cachedir=/opt/install/offline-k8s/tmp/dnf', 'repoquery', '*fuse*overlay*', '*overlay*']
+2026-06-25T16:39:32+0800 DEBUG User-Agent: constructed: 'libdnf (openEuler 22.03; generic; Linux.aarch64)'
+2026-06-25T16:39:32+0800 DEBUG repo: using cache for: OS
+2026-06-25T16:39:32+0800 DEBUG OS: using metadata from Wed 30 Mar 2022 04:47:17 PM CST.
+2026-06-25T16:39:32+0800 DEBUG repo: using cache for: everything
+2026-06-25T16:39:32+0800 DEBUG everything: using metadata from Wed 30 Mar 2022 04:56:13 PM CST.
+2026-06-25T16:39:32+0800 DEBUG repo: using cache for: EPOL
+2026-06-25T16:39:32+0800 DEBUG EPOL: using metadata from Wed 30 Mar 2022 04:34:04 PM CST.
+2026-06-25T16:39:32+0800 DEBUG repo: using cache for: debuginfo
+2026-06-25T16:39:32+0800 DEBUG debuginfo: using metadata from Wed 30 Mar 2022 04:52:38 PM CST.
+2026-06-25T16:39:32+0800 DEBUG repo: using cache for: source
+2026-06-25T16:39:32+0800 DEBUG source: using metadata from Wed 30 Mar 2022 04:53:48 PM CST.
+2026-06-25T16:39:32+0800 DEBUG repo: using cache for: update
+2026-06-25T16:39:32+0800 DEBUG update: using metadata from Fri 14 Jun 2024 09:00:57 PM CST.
+2026-06-25T16:39:32+0800 DEBUG repo: using cache for: update-source
+2026-06-25T16:39:32+0800 DEBUG update-source: using metadata from Fri 14 Jun 2024 09:00:58 PM CST.
+2026-06-25T16:39:32+0800 INFO Last metadata expiration check: 0:00:16 ago on Thu 25 Jun 2026 04:39:16 PM CST.
+2026-06-25T16:39:32+0800 DDEBUG timer: sack setup: 381 ms
+2026-06-25T16:39:32+0800 DDEBUG Cleaning up.
+2026-06-25T16:39:42+0800 INFO --- logging initialized ---
+2026-06-25T16:39:42+0800 DDEBUG timer: config: 2 ms
+2026-06-25T16:39:42+0800 DEBUG Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, repoclosure, repodiff, repograph, repomanage, reposync
+2026-06-25T16:39:42+0800 DEBUG DNF version: 4.10.0
+2026-06-25T16:39:42+0800 DDEBUG Command: dnf --setopt=logdir=/opt/install/offline-k8s/logs --setopt=cachedir=/opt/install/offline-k8s/tmp/dnf download --resolve --downloaddir=/opt/install/offline-k8s/pkgs conntrack-tools socat ipset ipvsadm ebtables ethtool cri-tools 
+2026-06-25T16:39:42+0800 DDEBUG Installroot: /
+2026-06-25T16:39:42+0800 DDEBUG Releasever: 22.03LTS
+2026-06-25T16:39:42+0800 DEBUG cachedir: /opt/install/offline-k8s/tmp/dnf
+2026-06-25T16:39:42+0800 DDEBUG Base command: download
+2026-06-25T16:39:42+0800 DDEBUG Extra commands: ['--setopt=logdir=/opt/install/offline-k8s/logs', '--setopt=cachedir=/opt/install/offline-k8s/tmp/dnf', 'download', '--resolve', '--downloaddir=/opt/install/offline-k8s/pkgs', 'conntrack-tools', 'socat', 'ipset', 'ipvsadm', 'ebtables', 'ethtool', 'cri-tools']
+2026-06-25T16:39:42+0800 DEBUG User-Agent: constructed: 'libdnf (openEuler 22.03; generic; Linux.aarch64)'
+2026-06-25T16:39:42+0800 DEBUG repo: using cache for: OS
+2026-06-25T16:39:42+0800 DEBUG OS: using metadata from Wed 30 Mar 2022 04:47:17 PM CST.
+2026-06-25T16:39:42+0800 DEBUG repo: using cache for: everything
+2026-06-25T16:39:42+0800 DEBUG everything: using metadata from Wed 30 Mar 2022 04:56:13 PM CST.
+2026-06-25T16:39:42+0800 DEBUG repo: using cache for: EPOL
+2026-06-25T16:39:42+0800 DEBUG EPOL: using metadata from Wed 30 Mar 2022 04:34:04 PM CST.
+2026-06-25T16:39:42+0800 DEBUG repo: using cache for: debuginfo
+2026-06-25T16:39:42+0800 DEBUG debuginfo: using metadata from Wed 30 Mar 2022 04:52:38 PM CST.
+2026-06-25T16:39:42+0800 DEBUG repo: using cache for: source
+2026-06-25T16:39:42+0800 DEBUG source: using metadata from Wed 30 Mar 2022 04:53:48 PM CST.
+2026-06-25T16:39:42+0800 DEBUG repo: using cache for: update
+2026-06-25T16:39:43+0800 DEBUG update: using metadata from Fri 14 Jun 2024 09:00:57 PM CST.
+2026-06-25T16:39:43+0800 DEBUG repo: using cache for: update-source
+2026-06-25T16:39:43+0800 DEBUG update-source: using metadata from Fri 14 Jun 2024 09:00:58 PM CST.
+2026-06-25T16:39:43+0800 INFO Last metadata expiration check: 0:00:27 ago on Thu 25 Jun 2026 04:39:16 PM CST.
+2026-06-25T16:39:43+0800 DDEBUG timer: sack setup: 414 ms
+2026-06-25T16:39:43+0800 ERROR No package cri-tools available.
+2026-06-25T16:39:43+0800 ERROR Exiting due to strict setting.
+2026-06-25T16:39:43+0800 DDEBUG Cleaning up.
+2026-06-25T16:39:43+0800 SUBDEBUG 
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 239, in _get_packages
+    queries.append(func(pkg_spec))
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 297, in _get_query
+    raise dnf.exceptions.PackageNotFoundError(msg)
+dnf.exceptions.PackageNotFoundError: No package cri-tools available.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/site-packages/dnf/cli/main.py", line 67, in main
+    return _main(base, args, cli_class, option_parser_class)
+  File "/usr/lib/python3.9/site-packages/dnf/cli/main.py", line 106, in _main
+    return cli_run(cli, base)
+  File "/usr/lib/python3.9/site-packages/dnf/cli/main.py", line 122, in cli_run
+    cli.run()
+  File "/usr/lib/python3.9/site-packages/dnf/cli/cli.py", line 1055, in run
+    return self.command.run()
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 100, in run
+    pkgs = self._get_pkg_objs_rpms(self.opts.packages)
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 168, in _get_pkg_objs_rpms
+    pkgs = self._get_packages_with_deps(pkg_specs)
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 251, in _get_packages_with_deps
+    pkgs = self._get_packages(pkg_specs)
+  File "/usr/lib/python3.9/site-packages/dnf-plugins/download.py", line 244, in _get_packages
+    raise dnf.exceptions.Error(e)
+dnf.exceptions.Error: No package cri-tools available.
+2026-06-25T16:39:43+0800 CRITICAL Error: No package cri-tools available.
+2026-06-25T16:39:53+0800 INFO --- logging initialized ---
+2026-06-25T16:39:53+0800 DDEBUG timer: config: 2 ms
+2026-06-25T16:39:53+0800 DEBUG Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, repoclosure, repodiff, repograph, repomanage, reposync
+2026-06-25T16:39:53+0800 DEBUG DNF version: 4.10.0
+2026-06-25T16:39:53+0800 DDEBUG Command: dnf --setopt=logdir=/opt/install/offline-k8s/logs --setopt=cachedir=/opt/install/offline-k8s/tmp/dnf download --resolve --downloaddir=/opt/install/offline-k8s/pkgs conntrack-tools socat ipset ipvsadm ebtables ethtool 
+2026-06-25T16:39:53+0800 DDEBUG Installroot: /
+2026-06-25T16:39:53+0800 DDEBUG Releasever: 22.03LTS
+2026-06-25T16:39:53+0800 DEBUG cachedir: /opt/install/offline-k8s/tmp/dnf
+2026-06-25T16:39:53+0800 DDEBUG Base command: download
+2026-06-25T16:39:53+0800 DDEBUG Extra commands: ['--setopt=logdir=/opt/install/offline-k8s/logs', '--setopt=cachedir=/opt/install/offline-k8s/tmp/dnf', 'download', '--resolve', '--downloaddir=/opt/install/offline-k8s/pkgs', 'conntrack-tools', 'socat', 'ipset', 'ipvsadm', 'ebtables', 'ethtool']
+2026-06-25T16:39:53+0800 DEBUG User-Agent: constructed: 'libdnf (openEuler 22.03; generic; Linux.aarch64)'
+2026-06-25T16:39:53+0800 DEBUG repo: using cache for: OS
+2026-06-25T16:39:53+0800 DEBUG OS: using metadata from Wed 30 Mar 2022 04:47:17 PM CST.
+2026-06-25T16:39:53+0800 DEBUG repo: using cache for: everything
+2026-06-25T16:39:53+0800 DEBUG everything: using metadata from Wed 30 Mar 2022 04:56:13 PM CST.
+2026-06-25T16:39:53+0800 DEBUG repo: using cache for: EPOL
+2026-06-25T16:39:53+0800 DEBUG EPOL: using metadata from Wed 30 Mar 2022 04:34:04 PM CST.
+2026-06-25T16:39:53+0800 DEBUG repo: using cache for: debuginfo
+2026-06-25T16:39:53+0800 DEBUG debuginfo: using metadata from Wed 30 Mar 2022 04:52:38 PM CST.
+2026-06-25T16:39:53+0800 DEBUG repo: using cache for: source
+2026-06-25T16:39:53+0800 DEBUG source: using metadata from Wed 30 Mar 2022 04:53:48 PM CST.
+2026-06-25T16:39:53+0800 DEBUG repo: using cache for: update
+2026-06-25T16:39:53+0800 DEBUG update: using metadata from Fri 14 Jun 2024 09:00:57 PM CST.
+2026-06-25T16:39:53+0800 DEBUG repo: using cache for: update-source
+2026-06-25T16:39:53+0800 DEBUG update-source: using metadata from Fri 14 Jun 2024 09:00:58 PM CST.
+2026-06-25T16:39:53+0800 INFO Last metadata expiration check: 0:00:37 ago on Thu 25 Jun 2026 04:39:16 PM CST.
+2026-06-25T16:39:53+0800 DDEBUG timer: sack setup: 341 ms
+2026-06-25T16:40:04+0800 DDEBUG Cleaning up.

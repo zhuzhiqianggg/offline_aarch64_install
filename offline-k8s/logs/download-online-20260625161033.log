@@ -1,0 +1,81 @@
+[2026-06-25 16:10:33] 查询最新稳定版本
+[2026-06-25 16:10:37] 版本已锁定:
+ARCH=arm64
+RPM_ARCH=aarch64
+VERSION_POLICY=latest-stable-only
+ALLOW_PRERELEASE=false
+SEALOS_VERSION=v5.1.1
+KUBERNETES_VERSION=v1.33.6
+CALICO_VERSION=v3.28.1
+INGRESS_NGINX_VERSION=controller-v1.15.1
+KUBOARD_VERSION=v3
+HELM_VERSION=v3.21.2
+VERSION_NOTES=latest stable releases only; prerelease filtered; upstream_kubernetes=v1.36.2; labring_kubernetes_image=v1.33.6
+[2026-06-25 16:10:37] 下载 sealos: https://github.com/labring/sealos/releases/download/v5.1.1/sealos_5.1.1_linux_arm64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+ 27 67.1M   27 18.3M    0     0  10.4M      0  0:00:06  0:00:01  0:00:05 10.4M 27 67.1M   27 18.3M    0     0  8524k      0  0:00:08  0:00:02  0:00:06     0 38 67.1M   38 25.5M    0     0  9239k      0  0:00:07  0:00:02  0:00:05 6897k 44 67.1M   44 29.7M    0     0  7958k      0  0:00:08  0:00:03  0:00:05 5657k 53 67.1M   53 35.8M    0     0  7660k      0  0:00:08  0:00:04  0:00:04 5921k 62 67.1M   62 41.7M    0     0  7377k      0  0:00:09  0:00:05  0:00:04 5944k 71 67.1M   71 47.7M    0     0  7188k      0  0:00:09  0:00:06  0:00:03 6547k 80 67.1M   80 53.8M    0     0  7069k      0  0:00:09  0:00:07  0:00:02 5833k 89 67.1M   89 60.0M    0     0  6992k      0  0:00:09  0:00:08  0:00:01 6247k 98 67.1M   98 65.8M    0     0  6888k      0  0:00:09  0:00:09 --:--:-- 6146k100 67.1M  100 67.1M    0     0  6861k      0  0:00:10  0:00:10 --:--:-- 6154k
+/opt/install/offline-k8s/tmp/sealos-download: gzip compressed data, max compression, original size modulo 2^32 230217216
+SealosVersion:
+  buildDate: "2025-11-17T04:16:18Z"
+  compiler: gc
+  gitCommit: 1e312ad2c
+  gitVersion: 5.1.1
+  goVersion: go1.23.12
+  platform: linux/arm64
+
+[2026-06-25 16:10:50] 下载 helm: https://get.helm.sh/helm-v3.21.2-linux-arm64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 64 15.0M   64 9845k    0     0  11.8M      0  0:00:01 --:--:--  0:00:01 11.8M 98 15.0M   98 14.7M    0     0  8403k      0  0:00:01  0:00:01 --:--:-- 8403k100 15.0M  100 15.0M    0     0  8326k      0  0:00:01  0:00:01 --:--:-- 8324k
+version.BuildInfo{Version:"v3.21.2", GitCommit:"125963406833fe0525be91f46c8b5b0f22fb9e32", GitTreeState:"clean", GoVersion:"go1.26.4"}
+[2026-06-25 16:10:53] 下载 ingress-nginx manifest
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 16384  100 16384    0     0   833k      0 --:--:-- --:--:-- --:--:--  842k
+[2026-06-25 16:10:53] 下载 Kuboard manifest
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  8768  100  8768    0     0  24437      0 --:--:-- --:--:-- --:--:-- 24491
+[2026-06-25 16:10:53] 拉取 Kubernetes cluster image: docker.io/labring/kubernetes:v1.33.6
+Trying to pull docker.io/labring/kubernetes:v1.33.6...
+Getting image source signatures
+Copying blob sha256:dd5a69dc2326a5be95800ccb40b6badc0ae4b0ca34c87fdd1b4e1d2967fe6dbb
+Copying blob sha256:885e477c20ecf30b07034f0bce93c06b1fa95bb6a1dc9b6f79d5abb562d27d02
+Copying blob sha256:18de87d294f41f81aed9265c0be4bec77120e184609ac2f9ccf9c7034eab1219
+Copying blob sha256:390b8162f7d6e23f28cd229c94c95a433da350d696d28ab101409c601b18bc1b
+Copying config sha256:f972b3a3bc29aa1c37c2e424ab68acb27bfe806689ba48bf50e5a523a7d6cdb7
+Writing manifest to image destination
+Storing signatures
+f972b3a3bc29aa1c37c2e424ab68acb27bfe806689ba48bf50e5a523a7d6cdb7
+[2026-06-25 16:15:06] 拉取 Calico cluster image: docker.io/labring/calico:v3.28.1
+Trying to pull docker.io/labring/calico:v3.28.1...
+Getting image source signatures
+Copying blob sha256:e9dc49f954c0477eb18d15c772958645b809c0cb9e6b4b64fa89f0660ceb2f1a
+Copying config sha256:3987e6eb5d874d3ead31feeddbc6bab35b6d65e07084584906f10b1a749353ca
+Writing manifest to image destination
+Storing signatures
+3987e6eb5d874d3ead31feeddbc6bab35b6d65e07084584906f10b1a749353ca
+[2026-06-25 16:16:04] 导出 sealos cluster images
+Getting image source signatures
+Copying blob sha256:b6050a2a49f0e596f199990c23eab57cba750b4cc8fa396b960d57de7117abca
+Copying blob sha256:64d16c7ad7d784b1ed5686a3a8575de78b74c5c3a33ddae3d6ef325e1b573365
+Copying blob sha256:13bc0e7c1220277a3cfd243ef4ff2b1ed18e26efedd93fe13e7bf4ad8f82ac65
+Copying blob sha256:2c55d7df0331ba54518843d1cde445b5ec92a23c6435398c26d85b800b33ffac
+Copying config sha256:f972b3a3bc29aa1c37c2e424ab68acb27bfe806689ba48bf50e5a523a7d6cdb7
+Writing manifest to image destination
+Storing signatures
+Getting image source signatures
+Copying blob sha256:3f8e88170d2a55804cd53a22c56b57607e994bb41225121f2c239efa51fade39
+Copying config sha256:3987e6eb5d874d3ead31feeddbc6bab35b6d65e07084584906f10b1a749353ca
+Writing manifest to image destination
+Storing signatures
+[2026-06-25 16:16:22] 镜像清单:
+eipwork/etcd-host:3.4.16-2
+eipwork/kuboard:v3
+registry.k8s.io/ingress-nginx/controller:v1.15.1
+registry.k8s.io/ingress-nginx/controller:v1.15.1@sha256:594ceea76b01c592858f803f9ff4d2cb40542cae2060410b2c95f75907d659e1
+registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9@sha256:01038e7de14b78d702d2849c3aad72fd25903c4765af63cf16aa3398f5d5f2dd
+[2026-06-25 16:16:22] 未发现 docker/podman，普通应用镜像保存将依赖后续安装运行时后补齐
+[2026-06-25 16:16:23] 在线下载完成，日志: /opt/install/offline-k8s/logs/download-online-20260625161033.log

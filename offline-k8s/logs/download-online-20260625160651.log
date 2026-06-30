@@ -1,0 +1,31 @@
+[2026-06-25 16:06:51] 查询最新稳定版本
+[2026-06-25 16:06:54] 版本已锁定:
+ARCH=arm64
+RPM_ARCH=aarch64
+VERSION_POLICY=latest-stable-only
+ALLOW_PRERELEASE=false
+SEALOS_VERSION=v5.1.1
+KUBERNETES_VERSION=v1.36.2
+CALICO_VERSION=v3.31.6
+INGRESS_NGINX_VERSION=helm-chart-4.15.1
+KUBOARD_VERSION=v3
+HELM_VERSION=v3.21.2
+VERSION_NOTES=latest stable releases only; prerelease filtered
+[2026-06-25 16:06:54] 下载 sealos: https://github.com/labring/sealos/releases/download/v5.1.1/sealos_5.1.1_linux_arm64.deb
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0 23.6M    0  223k    0     0   202k      0  0:01:59  0:00:01  0:01:58  202k 28 23.6M   28 6952k    0     0  3323k      0  0:00:07  0:00:02  0:00:05 6797k 48 23.6M   48 11.3M    0     0  3770k      0  0:00:06  0:00:03  0:00:03 5745k 82 23.6M   82 19.4M    0     0  4860k      0  0:00:04  0:00:04 --:--:-- 6578k100 23.6M  100 23.6M    0     0  5015k      0  0:00:04  0:00:04 --:--:-- 6440k
+/opt/install/offline-k8s/tmp/sealos-download: Debian binary package (format 2.0), with control.tar.gz, data compression gz
+/opt/install/offline-k8s/bin/sealos: line 1: syntax error near unexpected token `newline'
+/opt/install/offline-k8s/bin/sealos: line 1: `!<arch>'
+[2026-06-25 16:06:59] 下载 helm: https://get.helm.sh/helm-v3.21.2-linux-arm64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 52 15.0M   52 8064k    0     0  6077k      0  0:00:02  0:00:01  0:00:01 6076k 90 15.0M   90 13.5M    0     0  6115k      0  0:00:02  0:00:02 --:--:-- 6115k100 15.0M  100 15.0M    0     0  5253k      0  0:00:02  0:00:02 --:--:-- 5253k
+version.BuildInfo{Version:"v3.21.2", GitCommit:"125963406833fe0525be91f46c8b5b0f22fb9e32", GitTreeState:"clean", GoVersion:"go1.26.4"}
+[2026-06-25 16:07:03] 下载 ingress-nginx manifest
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404

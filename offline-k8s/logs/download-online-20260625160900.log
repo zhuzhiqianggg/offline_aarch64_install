@@ -1,0 +1,43 @@
+[2026-06-25 16:09:00] 查询最新稳定版本
+[2026-06-25 16:09:02] 版本已锁定:
+ARCH=arm64
+RPM_ARCH=aarch64
+VERSION_POLICY=latest-stable-only
+ALLOW_PRERELEASE=false
+SEALOS_VERSION=v5.1.1
+KUBERNETES_VERSION=v1.36.2
+CALICO_VERSION=v3.31.6
+INGRESS_NGINX_VERSION=controller-v1.15.1
+KUBOARD_VERSION=v3
+HELM_VERSION=v3.21.2
+VERSION_NOTES=latest stable releases only; prerelease filtered
+[2026-06-25 16:09:03] 下载 sealos: https://github.com/labring/sealos/releases/download/v5.1.1/sealos_5.1.1_linux_arm64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+ 22 67.1M   22 14.8M    0     0  19.6M      0  0:00:03 --:--:--  0:00:03 19.6M 29 67.1M   29 19.4M    0     0  11.0M      0  0:00:06  0:00:01  0:00:05 4753k 42 67.1M   42 28.7M    0     0  10.4M      0  0:00:06  0:00:02  0:00:04 7106k 47 67.1M   47 32.0M    0     0  8039k      0  0:00:08  0:00:04  0:00:04 5302k 63 67.1M   63 42.7M    0     0  9198k      0  0:00:07  0:00:04  0:00:03 7139k 70 67.1M   70 47.3M    0     0  8431k      0  0:00:08  0:00:05  0:00:03 6666k 81 67.1M   81 54.9M    0     0  8325k      0  0:00:08  0:00:06  0:00:02 7260k 91 67.1M   91 61.3M    0     0  8104k      0  0:00:08  0:00:07  0:00:01 6689k100 67.1M  100 67.1M    0     0  7932k      0  0:00:08  0:00:08 --:--:-- 7838k
+/opt/install/offline-k8s/tmp/sealos-download: gzip compressed data, max compression, original size modulo 2^32 230217216
+SealosVersion:
+  buildDate: "2025-11-17T04:16:18Z"
+  compiler: gc
+  gitCommit: 1e312ad2c
+  gitVersion: 5.1.1
+  goVersion: go1.23.12
+  platform: linux/arm64
+
+[2026-06-25 16:09:14] 下载 helm: https://get.helm.sh/helm-v3.21.2-linux-arm64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 67 15.0M   67 10.1M    0     0  8603k      0  0:00:01  0:00:01 --:--:-- 8610k 67 15.0M   67 10.1M    0     0  6835k      0  0:00:02  0:00:01  0:00:01 6836k100 15.0M  100 15.0M    0     0  7689k      0  0:00:01  0:00:01 --:--:-- 7687k
+version.BuildInfo{Version:"v3.21.2", GitCommit:"125963406833fe0525be91f46c8b5b0f22fb9e32", GitTreeState:"clean", GoVersion:"go1.26.4"}
+[2026-06-25 16:09:17] 下载 ingress-nginx manifest
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 16384  100 16384    0     0  55024      0 --:--:-- --:--:-- --:--:-- 55164
+[2026-06-25 16:09:17] 下载 Kuboard manifest
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  8768  100  8768    0     0  17640      0 --:--:-- --:--:-- --:--:-- 17641
+[2026-06-25 16:09:17] 拉取 Kubernetes cluster image: docker.io/labring/kubernetes:v1.36.2
+Trying to pull docker.io/labring/kubernetes:v1.36.2...
+Error: initializing source docker://labring/kubernetes:v1.36.2: reading manifest v1.36.2 in docker.io/labring/kubernetes: manifest unknown
