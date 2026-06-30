@@ -104,10 +104,25 @@ install_compose() {
   docker compose version
 }
 
+install_buildx() {
+  log "安装 Docker Buildx 插件"
+  mkdir -p /usr/local/lib/docker/cli-plugins
+
+  if [[ -f "$ROOT_DIR/bin/docker-buildx" ]]; then
+    install -m 0755 "$ROOT_DIR/bin/docker-buildx" /usr/local/lib/docker/cli-plugins/docker-buildx
+  else
+    warn "未找到 docker-buildx 二进制，跳过。请放到 $ROOT_DIR/bin/docker-buildx"
+    return 0
+  fi
+
+  docker buildx version
+}
+
 main() {
   [[ $EUID -eq 0 ]] || fatal "请使用 root 执行"
   install_docker_binary
   install_compose
+  install_buildx
   log "Docker 离线安装完成"
 }
 

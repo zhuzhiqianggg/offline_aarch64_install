@@ -16,7 +16,7 @@
 | 包名 | 目录 | 内容 | 安装顺序 |
 |------|------|------|----------|
 | K8s | `offline-k8s` | Kubernetes v1.33.6 + Calico + ingress-nginx + Prometheus + metrics-server + NFS StorageClass | 1（如需 K8s） |
-| Docker | `offline-docker` | Docker Engine 29.6.0 + Docker Compose v2.36.1 | 2（如需运行容器/数据库） |
+| Docker | `offline-docker` | Docker Engine 29.6.0 + Docker Compose v2.36.1 + Docker Buildx v0.25.0 | 2（如需运行容器/数据库） |
 | Database | `offline-database` | MySQL 8.4 + Redis 8.8 + NebulaGraph 3.8.0 + Kafka 4.0.2 (KRaft) + Kafka UI，含一键部署脚本 | 3（依赖 Docker） |
 | Kuboard *已整合* | `offline-k8s` (内置) | Kuboard v4 + 专用 MariaDB 11.3.2，集群内置部署 | 内置在 K8s 安装中（无需 Docker） |
 
@@ -28,7 +28,7 @@
 | 包名 | tar.gz 文件 | 大小 |
 |------|------------|------|
 | K8s | `k8s-offline-openEuler-aarch64-*.tar.gz` | ~1.4G |
-| Docker | `offline-docker-aarch64-*.tar.gz` | ~93M |
+| Docker | `offline-docker-aarch64-*.tar.gz` | ~155M |
 | Database | `offline-database-aarch64-*.tar.gz` | ~1.1G |
 | Kuboard | *已整合到 K8s 包中* | - |
 
@@ -105,6 +105,7 @@ ASSUME_YES=true ./scripts/cleanup_test_cluster.sh
 
 - Docker Engine 29.6.0（静态二进制，不依赖 yum）
 - Docker Compose v2.36.1（CLI 插件模式）
+- Docker Buildx v0.25.0（CLI 插件，支持 BuildKit 镜像构建）
 - systemd service 管理
 - daemon.json 日志轮转：`100m` / `10` 文件
 
@@ -124,6 +125,7 @@ cd offline-docker-aarch64
 ```bash
 docker version                             # Client + Server 正常
 docker compose version                     # Compose v2 可用
+docker buildx version                      # Buildx 可用
 systemctl is-active docker                 # active
 cat /etc/docker/daemon.json                # 日志配置 100m/10
 ```
@@ -585,8 +587,11 @@ bash scripts/01_download_online.sh
 │   └── bundle/                            # 最终离线包
 ├── offline-docker/                        # Docker 离线包
 │   ├── scripts/
-│   │   └── install_docker_offline.sh      # 一键安装
-│   ├── bin/                               # Docker Compose 二进制
+│   │   ├── install_docker_offline.sh       # Docker 安装脚本（含 buildx）
+│   │   └── package_docker_bundle.sh        # 打包脚本
+│   ├── bin/                               # CLI 插件二进制
+│   │   ├── docker-compose                 # Compose v2.36.1
+│   │   └── docker-buildx                  # Buildx v0.25.0
 │   ├── pkgs/                              # Docker Engine 二进制
 │   └── bundle/                            # 最终离线包
 ├── offline-database/                      # Database 离线包

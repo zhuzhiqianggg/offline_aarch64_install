@@ -28,7 +28,7 @@ Offline Docker Engine Package
 =============================
 构建时间: $(date '+%F %T')
 架构: ARM64/aarch64
-内容: Docker Engine + Docker Compose 插件
+内容: Docker Engine + Docker Compose 插件 + Docker Buildx 插件
 不包含: K8s、不包含数据库镜像、不包含业务数据库 compose
 EOF
 
