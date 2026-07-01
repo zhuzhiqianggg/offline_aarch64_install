@@ -11,6 +11,18 @@ fatal() { printf '[%s] ERROR: %s\n' "$(date '+%F %T')" "$*"; exit 1; }
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
+# 读取架构配置
+ARCH_CONFIG="$ROOT_DIR/config/arch.env"
+if [[ -f "$ARCH_CONFIG" ]]; then
+  source "$ARCH_CONFIG"
+fi
+ARCH="${ARCH:-arm64}"
+case "$ARCH" in
+  arm64) COMPOSE_ARCH="aarch64" ;;
+  amd64) COMPOSE_ARCH="x86_64" ;;
+  *) fatal "不支持的架构: $ARCH (可选: arm64, amd64)" ;;
+esac
+
 install_docker_binary() {
   log "安装 Docker 二进制"
 
@@ -116,8 +128,8 @@ install_compose() {
 
   if [[ -f "$ROOT_DIR/bin/docker-compose" ]]; then
     install -m 0755 "$ROOT_DIR/bin/docker-compose" /usr/local/lib/docker/cli-plugins/docker-compose
-  elif [[ -f "$ROOT_DIR/pkgs/docker-compose-linux-aarch64" ]]; then
-    install -m 0755 "$ROOT_DIR/pkgs/docker-compose-linux-aarch64" /usr/local/lib/docker/cli-plugins/docker-compose
+  elif [[ -f "$ROOT_DIR/pkgs/docker-compose-linux-${COMPOSE_ARCH}" ]]; then
+    install -m 0755 "$ROOT_DIR/pkgs/docker-compose-linux-${COMPOSE_ARCH}" /usr/local/lib/docker/cli-plugins/docker-compose
   else
     warn "未找到 docker-compose 二进制，跳过。请放到 $ROOT_DIR/bin/docker-compose"
     return 0

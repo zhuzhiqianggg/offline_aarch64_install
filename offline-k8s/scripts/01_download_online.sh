@@ -98,8 +98,8 @@ raise SystemExit(1)' "$pattern"
 
 write_lock() {
   cat > "$VERSIONS_LOCK" <<EOF_LOCK
-ARCH=arm64
-RPM_ARCH=aarch64
+ARCH=$ARCH
+RPM_ARCH=$RPM_ARCH
 VERSION_POLICY=$VERSION_POLICY
 ALLOW_PRERELEASE=$ALLOW_PRERELEASE
 AUTO_UPGRADE=${AUTO_UPGRADE:-false}
@@ -117,7 +117,7 @@ EOF_LOCK
 
 install_sealos() {
   local url
-  url="$(asset_download_url "labring/sealos" "$SEALOS_VERSION" 'linux_arm64\.tar\.gz$')" || fatal "未找到 sealos $SEALOS_VERSION arm64 tar.gz 资产"
+  url="$(asset_download_url "labring/sealos" "$SEALOS_VERSION" "linux_${ARCH}\.tar\.gz$")" || fatal "未找到 sealos $SEALOS_VERSION ${ARCH} tar.gz 资产"
   log "下载 sealos: $url"
   curl -fL --retry 3 "$url" -o "$TMP_DIR/sealos-download"
   file "$TMP_DIR/sealos-download" || true
@@ -144,11 +144,11 @@ PY
 }
 
 download_helm() {
-  local url="https://get.helm.sh/helm-${HELM_VERSION}-linux-arm64.tar.gz"
+  local url="https://get.helm.sh/helm-${HELM_VERSION}-linux-${ARCH}.tar.gz"
   log "下载 helm: $url"
-  curl -fL --retry 3 "$url" -o "$TMP_DIR/helm-linux-arm64.tar.gz"
-  tar --no-same-owner -xf "$TMP_DIR/helm-linux-arm64.tar.gz" -C "$TMP_DIR"
-  cp "$TMP_DIR/linux-arm64/helm" "$BIN_DIR/helm"
+  curl -fL --retry 3 "$url" -o "$TMP_DIR/helm-linux-${ARCH}.tar.gz"
+  tar --no-same-owner -xf "$TMP_DIR/helm-linux-${ARCH}.tar.gz" -C "$TMP_DIR"
+  cp "$TMP_DIR/linux-${ARCH}/helm" "$BIN_DIR/helm"
   chmod +x "$BIN_DIR/helm"
   "$BIN_DIR/helm" version || true
 }
@@ -172,8 +172,8 @@ pull_sealos_images() {
 
   mkdir -p "$ROOT_DIR/sealos-images"
   log "导出 sealos cluster images"
-  "$sealos" save -o "$ROOT_DIR/sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar" "$kube_img"
-  "$sealos" save -o "$ROOT_DIR/sealos-images/calico-${CALICO_VERSION}-arm64.tar" "$calico_img"
+  "$sealos" save -o "$ROOT_DIR/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" "$kube_img"
+  "$sealos" save -o "$ROOT_DIR/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar" "$calico_img"
   return 0
 }
 
@@ -207,7 +207,7 @@ EOF
     -f "$ROOT_DIR/Clusterfile" \
     "$ROOT_DIR" 2>/dev/null; then
     log "成功构建 Kubernetes cluster image"
-    "$sealos" save -o "$ROOT_DIR/sealos-images/kubernetes-${kube_version}-arm64.tar" "docker.io/labring/kubernetes:${kube_version}"
+    "$sealos" save -o "$ROOT_DIR/sealos-images/kubernetes-${kube_version}-${ARCH}.tar" "docker.io/labring/kubernetes:${kube_version}"
   else
     log "sealos build 失败，尝试直接使用 kubeadm 镜像"
     local kubeadm_image="registry.k8s.io/kubeadm/kubeadm:v$(echo "$kube_version" | sed 's/v//')"
@@ -303,7 +303,7 @@ save_app_images() {
     safe="$(echo "$image" | sed 's/[^A-Za-z0-9_.-]/_/g')"
     if [ -n "$runtime" ]; then
       log "拉取应用镜像: $image"
-      "$runtime" pull --platform linux/arm64 "$image"
+      "$runtime" pull --platform "$OCI_PLATFORM" "$image"
       "$runtime" save -o "$IMAGES_DIR/${safe}.tar" "$image"
     else
       log "使用 sealos 拉取并导出应用镜像: $image"
@@ -361,6 +361,14 @@ main() {
   [ -f "$COMPONENT_VERSIONS" ] || fatal "缺少固定组件版本文件: $COMPONENT_VERSIONS"
   # shellcheck disable=SC1090
   source "$COMPONENT_VERSIONS"
+  # 架构配置（可通过环境变量覆盖，默认 arm64）
+  ARCH="${ARCH:-arm64}"
+  RPM_ARCH="${RPM_ARCH:-aarch64}"
+  case "$ARCH" in
+    arm64) OCI_PLATFORM="linux/arm64" ;;
+    amd64) OCI_PLATFORM="linux/amd64" ;;
+    *) fatal "不支持的架构: $ARCH (可选: arm64, amd64)" ;;
+  esac
   VERSION_NOTES="fixed reviewed component versions; upstream Kubernetes support window considered; no automatic downgrade or upgrade"
   write_lock
   log "版本已锁定:"

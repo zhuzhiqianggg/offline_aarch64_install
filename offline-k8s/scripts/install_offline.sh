@@ -35,6 +35,13 @@ else
   fatal "缺少版本锁定文件: $ROOT_DIR/config/versions.lock"
 fi
 
+# 根据 ARCH 推导 OCI 平台
+case "$ARCH" in
+  arm64) OCI_PLATFORM="linux/arm64" ;;
+  amd64) OCI_PLATFORM="linux/amd64" ;;
+  *) fatal "不支持的架构: $ARCH" ;;
+esac
+
 SEALOS="${ROOT_DIR}/bin/sealos"
 
 # 已选择的 Master IP，供安装和 NFS StorageClass 复用
@@ -147,11 +154,11 @@ check_prerequisites() {
     fi
   fi
 
-  if [[ ! -f "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar" ]]; then
+  if [[ ! -f "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" ]]; then
     fatal "缺少 Kubernetes cluster image"
   fi
 
-  if [[ ! -f "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-arm64.tar" ]]; then
+  if [[ ! -f "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar" ]]; then
     fatal "缺少 Calico cluster image"
   fi
 
@@ -234,14 +241,14 @@ load_images() {
   # sealos load 可直接加载 OCI tar 包，不依赖 containerd 运行
   mkdir -p /var/lib/sealos 2>/dev/null || true
 
-  if [[ -f "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar" ]]; then
+  if [[ -f "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" ]]; then
     log "加载 Kubernetes cluster image"
-    sealos load -i "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar"
+    sealos load -i "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
   fi
 
-  if [[ -f "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-arm64.tar" ]]; then
+  if [[ -f "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar" ]]; then
     log "加载 Calico cluster image"
-    sealos load -i "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-arm64.tar"
+    sealos load -i "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar"
   fi
 }
 
@@ -347,7 +354,7 @@ with tarfile.open('$image_tar') as t:
     local target="sealos.hub:5000/${repo_tag}"
     if ctr --address=/run/containerd/containerd.sock -n k8s.io images push \
         --local --plain-http --user admin:passw0rd \
-        --platform linux/arm64 \
+        --platform "$OCI_PLATFORM" \
         "$target" "$import_name" >/dev/null 2>&1; then
       log "  推送成功: $fname → $target"
       imported=$((imported + 1))

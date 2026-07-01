@@ -22,9 +22,11 @@ check_root() {
 check_arch() {
   local arch
   arch=$(uname -m)
-  if [[ "$arch" != "aarch64" ]]; then
-    warn "当前架构: $arch, 目标架构: aarch64 (ARM64)"
-    warn "如果目标服务器是 ARM64，当前环境可能仅用于打包"
+  source "$ROOT_DIR/config/versions.lock" 2>/dev/null
+  local expected_rpm="${RPM_ARCH:-aarch64}"
+  if [[ "$arch" != "$expected_rpm" ]]; then
+    warn "当前架构: $arch, 目标架构: $expected_rpm (ARCH=${ARCH:-arm64})"
+    warn "如果目标服务器架构不同，当前环境可能仅用于打包"
   else
     log "架构检查通过: $arch"
   fi

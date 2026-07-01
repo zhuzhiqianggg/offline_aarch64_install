@@ -4,6 +4,19 @@
 
 set -euo pipefail
 ROOT_DIR="${ROOT_DIR:-/opt/install/offline-database}"
+
+# 读取架构配置
+ARCH_CONFIG="$ROOT_DIR/config/arch.env"
+if [[ -f "$ARCH_CONFIG" ]]; then
+  source "$ARCH_CONFIG"
+fi
+ARCH="${ARCH:-arm64}"
+case "$ARCH" in
+  arm64) OCI_PLATFORM="linux/arm64" ;;
+  amd64) OCI_PLATFORM="linux/amd64" ;;
+  *) fatal "不支持的架构: $ARCH (可选: arm64, amd64)" ;;
+esac
+
 IMAGES_DIR="$ROOT_DIR/images"
 
 mkdir -p "$IMAGES_DIR"
@@ -51,7 +64,7 @@ for image in "${IMAGES[@]}"; do
   log "[PULL] $image"
   local pull_ok=false
   for attempt in $(seq 1 $MAX_RETRIES); do
-    if docker pull --platform linux/arm64 "$image" 2>&1; then
+    if docker pull --platform "$OCI_PLATFORM" "$image" 2>&1; then
       pull_ok=true
       break
     fi

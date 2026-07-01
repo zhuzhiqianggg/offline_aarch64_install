@@ -9,8 +9,6 @@ CONFIG_DIR="$ROOT_DIR/config"
 VERSIONS_LOCK="$CONFIG_DIR/versions.lock"
 BUNDLE_DIR="$ROOT_DIR/bundle"
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
-STAGING_NAME="k8s-offline-openEuler-aarch64"
-STAGING_DIR="$BUNDLE_DIR/$STAGING_NAME"
 
 log()  { printf '[%s] %s\n' "$(date '+%F %T')" "$*"; }
 warn() { printf '[%s] WARN: %s\n' "$(date '+%F %T')" "$*"; }
@@ -20,6 +18,9 @@ fatal() { log "ERROR: $*"; exit 1; }
 [[ -f "$VERSIONS_LOCK" ]] || fatal "缺少版本锁定文件: $VERSIONS_LOCK"
 # shellcheck disable=SC1090
 source "$VERSIONS_LOCK"
+
+STAGING_NAME="k8s-offline-openEuler-${RPM_ARCH}"
+STAGING_DIR="$BUNDLE_DIR/$STAGING_NAME"
 
 # 使用 pigz 并行压缩（如可用）
 GZIP_CMD="gzip"
@@ -60,8 +61,8 @@ prepare_bundle_dir() {
   local required=(
     "bin/sealos"
     "config/versions.lock"
-    "sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar"
-    "sealos-images/calico-${CALICO_VERSION}-arm64.tar"
+    "sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
+    "sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar"
     "manifests/ingress-nginx/deploy.yaml"
   )
   local missing=0
@@ -96,7 +97,7 @@ create_version_info() {
 Kubernetes Offline Deployment Package
 =====================================
 构建时间: $(date '+%Y-%m-%d %H:%M:%S')
-架构: ARM64 (aarch64)
+架构: ${ARCH} (${RPM_ARCH})
 目标系统: openEuler 22.03 LTS
 
 组件版本:
@@ -128,7 +129,7 @@ generate_checksums() {
 }
 
 create_archive() {
-  local archive_name="k8s-offline-openEuler-aarch64-${TIMESTAMP}.tar.gz"
+  local archive_name="k8s-offline-openEuler-${RPM_ARCH}-${TIMESTAMP}.tar.gz"
   local archive_path="$BUNDLE_DIR/$archive_name"
 
   log "创建归档 (使用 $GZIP_CMD): $archive_name"
@@ -148,11 +149,11 @@ print_summary() {
   log "========================================"
   log "离线包导出完成"
   log "========================================"
-  log "归档文件: $BUNDLE_DIR/k8s-offline-openEuler-aarch64-${TIMESTAMP}.tar.gz"
-  log "文件大小: $(du -h "$BUNDLE_DIR/k8s-offline-openEuler-aarch64-${TIMESTAMP}.tar.gz" | cut -f1)"
+  log "归档文件: $BUNDLE_DIR/k8s-offline-openEuler-${RPM_ARCH}-${TIMESTAMP}.tar.gz"
+  log "文件大小: $(du -h "$BUNDLE_DIR/k8s-offline-openEuler-${RPM_ARCH}-${TIMESTAMP}.tar.gz" | cut -f1)"
   log ""
   log "传输到目标服务器后:"
-  log "  1. 解压: tar -xzf k8s-offline-openEuler-aarch64-*.tar.gz"
+  log "  1. 解压: tar -xzf k8s-offline-openEuler-${RPM_ARCH}-*.tar.gz"
   log "  2. 安装: sudo ./install_offline.sh"
   log ""
   log "注意: 安装脚本需 root 权限运行"

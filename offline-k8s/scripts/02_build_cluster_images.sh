@@ -16,6 +16,13 @@ warn() { printf '[%s] WARN: %s\n' "$(date '+%F %T')" "$*"; }
 # shellcheck disable=SC1090
 source "$VERSIONS_LOCK"
 
+# 根据 ARCH 推导 OCI 平台
+case "$ARCH" in
+  arm64) OCI_PLATFORM="linux/arm64" ;;
+  amd64) OCI_PLATFORM="linux/amd64" ;;
+  *) fatal "不支持的架构: $ARCH" ;;
+esac
+
 SEALOS="${ROOT_DIR}/bin/sealos"
 
 check_sealos() {
@@ -66,8 +73,8 @@ EOF
 build_images() {
   log "检查现有 cluster images"
 
-  local kube_tar="${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar"
-  local calico_tar="${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-arm64.tar"
+  local kube_tar="${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
+  local calico_tar="${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar"
 
   if [[ -f "$kube_tar" ]]; then
     log "Kubernetes cluster image 已存在: $kube_tar"
@@ -102,8 +109,8 @@ build_images() {
 verify_images() {
   log "验证 cluster images"
   local images=(
-    "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar"
-    "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-arm64.tar"
+    "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
+    "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar"
   )
 
   for img in "${images[@]}"; do

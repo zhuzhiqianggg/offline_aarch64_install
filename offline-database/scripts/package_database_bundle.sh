@@ -4,8 +4,21 @@
 set -euo pipefail
 ROOT_DIR="${ROOT_DIR:-/opt/install/offline-database}"
 BUNDLE_DIR="$ROOT_DIR/bundle"
+
+# 读取架构配置
+ARCH_CONFIG="$ROOT_DIR/config/arch.env"
+if [[ -f "$ARCH_CONFIG" ]]; then
+  source "$ARCH_CONFIG"
+fi
+ARCH="${ARCH:-arm64}"
+case "$ARCH" in
+  arm64) PKG_ARCH="aarch64"; ARCH_LABEL="ARM64/aarch64" ;;
+  amd64) PKG_ARCH="x86_64"; ARCH_LABEL="AMD64/x86_64" ;;
+  *) echo "不支持的架构: $ARCH"; exit 1 ;;
+esac
+
 TS=$(date +%Y%m%d%H%M%S)
-PKG_NAME="offline-database-aarch64"
+PKG_NAME="offline-database-${PKG_ARCH}"
 OUT_DIR="$BUNDLE_DIR/$PKG_NAME"
 
 log()  { printf '[%s] %s\n' "$(date '+%F %T')" "$*"; }
@@ -53,7 +66,7 @@ cat > "$OUT_DIR/VERSION.txt" <<EOF
 Offline Database/Middleware Package
 ===================================
 构建时间: $(date '+%F %T')
-架构: ARM64/aarch64
+架构: ${ARCH_LABEL}
 内容:
 - MySQL: 8.4 (端口 3306, 数据 /data/mysql)
 - Redis: 8.8 (端口 6379, 数据 /data/redis)

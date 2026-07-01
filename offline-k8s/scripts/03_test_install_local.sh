@@ -33,11 +33,11 @@ check_prerequisites() {
     fatal "sealos 未安装: $SEALOS"
   fi
 
-  if [[ ! -f "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar" ]]; then
+  if [[ ! -f "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" ]]; then
     fatal "缺少 Kubernetes cluster image"
   fi
 
-  if [[ ! -f "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-arm64.tar" ]]; then
+  if [[ ! -f "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar" ]]; then
     fatal "缺少 Calico cluster image"
   fi
 
@@ -52,10 +52,10 @@ load_images() {
   log "加载离线 cluster images"
 
   log "加载 Kubernetes image"
-  "$SEALOS" load -i "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-arm64.tar"
+  "$SEALOS" load -i "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
 
   log "加载 Calico image"
-  "$SEALOS" load -i "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-arm64.tar"
+  "$SEALOS" load -i "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar"
 }
 
 install_kubernetes() {
