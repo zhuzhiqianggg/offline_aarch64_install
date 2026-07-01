@@ -108,6 +108,38 @@ ASSUME_YES=true ./scripts/cleanup_test_cluster.sh
 - Docker Buildx v0.25.0（CLI 插件，支持 BuildKit 镜像构建）
 - systemd service 管理
 - daemon.json 日志轮转：`100m` / `10` 文件
+- K8s 节点自动检测：跳过 containerd 安装，避免版本冲突
+
+### Docker 与 containerd 的关系
+
+```
+┌─────────────────────────────────────────────┐
+│         /usr/bin/containerd (v1.7.29)       │  ← K8s (sealos) 安装
+│            containerd.service               │
+│                                             │
+│  ┌───────────────┐  ┌───────────────────┐  │
+│  │  namespace:   │  │   namespace:      │  │
+│  │    k8s.io    │  │      moby         │  │
+│  │               │  │                   │  │
+│  │  K8s Pods     │  │  Docker Compose   │  │
+│  │  (kubelet)    │  │   (dockerd)       │  │
+│  └───────────────┘  └───────────────────┘  │
+└─────────────────────────────────────────────┘
+        ↑ CRI                      ↑ Docker API
+        │                          │
+   ┌────┴─────┐              ┌────┴─────┐
+   │ kubelet  │              │ dockerd  │
+   └──────────┘              └──────────┘
+```
+
+Docker 和 K8s **可以共存**，它们共享同一个 containerd 实例：
+- **kubelet** 通过 CRI 接口连接 containerd，在 `k8s.io` namespace 下管理 Pod
+- **dockerd** 通过 Docker API 连接同一个 containerd，在 `moby` namespace 下管理容器
+- 两个 namespace 隔离，互不干扰
+
+**版本冲突风险**：Docker 29.6.0 tgz 包含 containerd v2.2.4，而 K8s (sealos) 使用 containerd v1.7.29。如果 Docker 安装脚本将 v2.2.4 的 containerd/shim 覆盖到 `/usr/local/bin/`，会导致 v1.7.29 的 containerd 加载到 v2.2.4 的 shim，报错 `unsupported shim version (3)`。
+
+**安装脚本的解决方案**：检测 kubelet 是否运行，若运行则跳过 `containerd`、`containerd-shim*`、`ctr`、`runc` 的安装，只安装 `docker`、`dockerd`、`docker-proxy`、`docker-init`。
 
 ### 安装步骤
 
@@ -128,6 +160,7 @@ docker compose version                     # Compose v2 可用
 docker buildx version                      # Buildx 可用
 systemctl is-active docker                 # active
 cat /etc/docker/daemon.json                # 日志配置 100m/10
+docker info | grep "containerd version"    # 确认 containerd 版本
 ```
 
 ### daemon.json 配置
