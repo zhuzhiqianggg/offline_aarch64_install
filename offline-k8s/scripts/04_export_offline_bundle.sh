@@ -90,6 +90,12 @@ copy_scripts() {
     chmod +x "$STAGING_DIR/scripts/"*.sh 2>/dev/null || true
     log "  [OK] scripts/ 目录"
   fi
+
+  # 复制全局架构配置到 bundle 根目录
+  if [[ -f "$ROOT_DIR/../arch.env" ]]; then
+    cp "$ROOT_DIR/../arch.env" "$STAGING_DIR/arch.env"
+    log "  [OK] arch.env"
+  fi
 }
 
 create_version_info() {

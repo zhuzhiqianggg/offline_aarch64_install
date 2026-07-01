@@ -361,12 +361,14 @@ main() {
   [ -f "$COMPONENT_VERSIONS" ] || fatal "缺少固定组件版本文件: $COMPONENT_VERSIONS"
   # shellcheck disable=SC1090
   source "$COMPONENT_VERSIONS"
-  # 架构配置（可通过环境变量覆盖，默认 arm64）
+  # 读取全局架构配置
+  for _p in "$ROOT_DIR/../arch.env" "$ROOT_DIR/config/arch.env"; do
+    if [[ -f "$_p" ]]; then source "$_p"; break; fi
+  done
   ARCH="${ARCH:-arm64}"
-  RPM_ARCH="${RPM_ARCH:-aarch64}"
   case "$ARCH" in
-    arm64) OCI_PLATFORM="linux/arm64" ;;
-    amd64) OCI_PLATFORM="linux/amd64" ;;
+    arm64) RPM_ARCH="aarch64"; OCI_PLATFORM="linux/arm64" ;;
+    amd64) RPM_ARCH="x86_64"; OCI_PLATFORM="linux/amd64" ;;
     *) fatal "不支持的架构: $ARCH (可选: arm64, amd64)" ;;
   esac
   VERSION_NOTES="fixed reviewed component versions; upstream Kubernetes support window considered; no automatic downgrade or upgrade"

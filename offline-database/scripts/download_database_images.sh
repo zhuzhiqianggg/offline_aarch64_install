@@ -5,11 +5,10 @@
 set -euo pipefail
 ROOT_DIR="${ROOT_DIR:-/opt/install/offline-database}"
 
-# 读取架构配置
-ARCH_CONFIG="$ROOT_DIR/config/arch.env"
-if [[ -f "$ARCH_CONFIG" ]]; then
-  source "$ARCH_CONFIG"
-fi
+# 读取全局架构配置 (项目根目录 → bundle 根目录 → 包内 config)
+for _p in "$ROOT_DIR/../arch.env" "$ROOT_DIR/arch.env" "$ROOT_DIR/config/arch.env"; do
+  if [[ -f "$_p" ]]; then source "$_p"; break; fi
+done
 ARCH="${ARCH:-arm64}"
 case "$ARCH" in
   arm64) OCI_PLATFORM="linux/arm64" ;;
