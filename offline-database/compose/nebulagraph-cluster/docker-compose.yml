@@ -2,7 +2,7 @@ services:
   metad:
     image: vesoft/nebula-metad:v3.8.0
     container_name: nebula-metad
-    restart: unless-stopped
+    restart: always
     network_mode: host
     cap_add:
       - SYS_PTRACE
@@ -29,7 +29,7 @@ services:
   storaged:
     image: vesoft/nebula-storaged:v3.8.0
     container_name: nebula-storaged
-    restart: unless-stopped
+    restart: always
     network_mode: host
     cap_add:
       - SYS_PTRACE
@@ -59,7 +59,7 @@ services:
   graphd:
     image: vesoft/nebula-graphd:v3.8.0
     container_name: nebula-graphd
-    restart: unless-stopped
+    restart: always
     network_mode: host
     cap_add:
       - SYS_PTRACE

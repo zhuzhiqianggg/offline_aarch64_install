@@ -21,7 +21,29 @@ install_docker_binary() {
   rm -rf /tmp/docker-offline-install
   mkdir -p /tmp/docker-offline-install
   tar -xf "$docker_pkg" -C /tmp/docker-offline-install
-  install -m 0755 /tmp/docker-offline-install/docker/* /usr/local/bin/
+
+  # K8s 节点已有 containerd（通常 v1.7.x），Docker tgz 中的 containerd v2.x
+  # 会覆盖 K8s 版本导致 shim API 不兼容（unsupported shim version 3）。
+  # 只安装 Docker 自身需要的二进制，跳过 containerd/ctr/shim/runc。
+  local k8s_mode=false
+  if systemctl is-active --quiet kubelet 2>/dev/null; then
+    k8s_mode=true
+    log "检测到 kubelet 运行中（K8s 节点），跳过 containerd 相关二进制安装"
+  fi
+
+  for f in /tmp/docker-offline-install/docker/*; do
+    local base
+    base=$(basename "$f")
+    if [[ "$k8s_mode" == "true" ]]; then
+      case "$base" in
+        containerd|containerd-shim*|containerd-stress|ctr|runc)
+          log "  跳过 $base（K8s 节点保留现有 containerd）"
+          continue
+          ;;
+      esac
+    fi
+    install -m 0755 "$f" "/usr/local/bin/$base"
+  done
 
   mkdir -p /etc/docker /var/lib/docker
   cat > /etc/docker/daemon.json <<'EOF'
