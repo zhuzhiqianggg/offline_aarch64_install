@@ -28,8 +28,8 @@ fatal(){ printf '[%s] ERROR: %s\n' "$(date '+%F %T')" "$*"; exit 1; }
 rm -rf "$OUT_DIR"
 mkdir -p "$OUT_DIR"/{images,compose,scripts,third-party}
 
-# 复制目录内容
-for dir in images compose scripts third-party; do
+# 复制目录内容 (images 只复制当前架构)
+for dir in compose scripts third-party; do
   src="$ROOT_DIR/$dir"
   dst="$OUT_DIR/$dir"
   if [[ -d "$src" ]] && [[ -n "$(ls -A "$src" 2>/dev/null)" ]]; then
@@ -39,6 +39,17 @@ for dir in images compose scripts third-party; do
     log "  [EMPTY] $dir/ (保留空目录)"
   fi
 done
+
+# images 只复制当前架构
+src="$ROOT_DIR/images/${ARCH}"
+dst="$OUT_DIR/images/${ARCH}"
+if [[ -d "$src" ]] && [[ -n "$(ls -A "$src" 2>/dev/null)" ]]; then
+  mkdir -p "$OUT_DIR/images"
+  cp -a "$src" "$dst/"
+  log "  [OK] images/${ARCH}/"
+else
+  log "  [EMPTY] images/${ARCH}/ (保留空目录)"
+fi
 
 chmod +x "$OUT_DIR"/scripts/*.sh 2>/dev/null || true
 
@@ -58,7 +69,7 @@ for svc_dir in "$OUT_DIR"/compose/*/; do
 done
 
 # 验证关键文件
-if [[ ! -d "$OUT_DIR/images" ]] || [[ -z "$(ls "$OUT_DIR/images"/*.tar 2>/dev/null)" ]]; then
+if [[ ! -d "$OUT_DIR/images/${ARCH}" ]] || [[ -z "$(ls "$OUT_DIR/images/${ARCH}"/*.tar 2>/dev/null)" ]]; then
   warn "镜像目录为空或不存在，请先执行 scripts/download_database_images.sh"
 fi
 if [[ ! -d "$OUT_DIR/compose" ]]; then

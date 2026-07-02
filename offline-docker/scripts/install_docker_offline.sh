@@ -26,7 +26,7 @@ install_docker_binary() {
   log "安装 Docker 二进制"
 
   local docker_pkg=""
-  docker_pkg=$(ls "$ROOT_DIR"/pkgs/docker-*.tgz "$ROOT_DIR"/pkgs/docker-*.tar 2>/dev/null | head -1 || true)
+  docker_pkg=$(ls "$ROOT_DIR"/pkgs/${ARCH}/docker-*.tgz "$ROOT_DIR"/pkgs/${ARCH}/docker-*.tar 2>/dev/null | head -1 || true)
   [[ -n "$docker_pkg" ]] || fatal "未找到 Docker 安装包，请放到 $ROOT_DIR/pkgs/，例如 docker-29.6.0.tgz"
 
   rm -rf /tmp/docker-offline-install
@@ -125,10 +125,10 @@ install_compose() {
   log "安装 Docker Compose 插件"
   mkdir -p /usr/local/lib/docker/cli-plugins
 
-  if [[ -f "$ROOT_DIR/bin/docker-compose" ]]; then
-    install -m 0755 "$ROOT_DIR/bin/docker-compose" /usr/local/lib/docker/cli-plugins/docker-compose
-  elif [[ -f "$ROOT_DIR/pkgs/docker-compose-linux-${COMPOSE_ARCH}" ]]; then
-    install -m 0755 "$ROOT_DIR/pkgs/docker-compose-linux-${COMPOSE_ARCH}" /usr/local/lib/docker/cli-plugins/docker-compose
+  if [[ -f "$ROOT_DIR/bin/${ARCH}/docker-compose" ]]; then
+    install -m 0755 "$ROOT_DIR/bin/${ARCH}/docker-compose" /usr/local/lib/docker/cli-plugins/docker-compose
+  elif [[ -f "$ROOT_DIR/pkgs/${ARCH}/docker-compose-linux-${COMPOSE_ARCH}" ]]; then
+    install -m 0755 "$ROOT_DIR/pkgs/${ARCH}/docker-compose-linux-${COMPOSE_ARCH}" /usr/local/lib/docker/cli-plugins/docker-compose
   else
     warn "未找到 docker-compose 二进制，跳过。请放到 $ROOT_DIR/bin/docker-compose"
     return 0
@@ -141,8 +141,8 @@ install_buildx() {
   log "安装 Docker Buildx 插件"
   mkdir -p /usr/local/lib/docker/cli-plugins
 
-  if [[ -f "$ROOT_DIR/bin/docker-buildx" ]]; then
-    install -m 0755 "$ROOT_DIR/bin/docker-buildx" /usr/local/lib/docker/cli-plugins/docker-buildx
+  if [[ -f "$ROOT_DIR/bin/${ARCH}/docker-buildx" ]]; then
+    install -m 0755 "$ROOT_DIR/bin/${ARCH}/docker-buildx" /usr/local/lib/docker/cli-plugins/docker-buildx
   else
     warn "未找到 docker-buildx 二进制，跳过。请放到 $ROOT_DIR/bin/docker-buildx"
     return 0

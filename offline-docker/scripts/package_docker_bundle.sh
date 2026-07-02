@@ -25,13 +25,20 @@ warn() { printf '[%s] WARN: %s\n' "$(date '+%F %T')" "$*"; }
 rm -rf "$OUT_DIR"
 mkdir -p "$OUT_DIR"/{bin,pkgs,scripts}
 
-for dir in bin pkgs scripts; do
+# 复制架构相关的 bin 和 pkgs（只复制当前架构）
+for dir in bin/${ARCH} pkgs/${ARCH}; do
   if [[ -d "$ROOT_DIR/$dir" ]]; then
-    cp -a "$ROOT_DIR/$dir/." "$OUT_DIR/$dir/"
+    mkdir -p "$OUT_DIR/$(dirname "$dir")"
+    cp -a "$ROOT_DIR/$dir" "$OUT_DIR/$dir"
   else
-    warn "目录不存在，已在离线包中保留空目录: $ROOT_DIR/$dir"
+    warn "目录不存在: $ROOT_DIR/$dir"
   fi
 done
+
+# 复制架构无关的 scripts
+if [[ -d "$ROOT_DIR/scripts" ]]; then
+  cp -a "$ROOT_DIR/scripts/." "$OUT_DIR/scripts/"
+fi
 
 chmod +x "$OUT_DIR"/scripts/*.sh 2>/dev/null || true
 

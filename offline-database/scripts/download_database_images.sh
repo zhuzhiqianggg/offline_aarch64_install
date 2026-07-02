@@ -16,7 +16,7 @@ case "$ARCH" in
   *) fatal "不支持的架构: $ARCH (可选: arm64, amd64)" ;;
 esac
 
-IMAGES_DIR="$ROOT_DIR/images"
+IMAGES_DIR="$ROOT_DIR/images/${ARCH}"
 
 mkdir -p "$IMAGES_DIR"
 log() { printf '[%s] %s\n' "$(date '+%F %T')" "$*"; }

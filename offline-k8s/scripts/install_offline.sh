@@ -169,9 +169,9 @@ check_prerequisites() {
 install_system_deps() {
   log "安装系统依赖"
 
-  if [[ -d "$ROOT_DIR/pkgs" ]] && ls "$ROOT_DIR/pkgs"/*.rpm >/dev/null 2>&1; then
+  if [[ -d "$ROOT_DIR/pkgs/${ARCH}" ]] && ls "$ROOT_DIR/pkgs/${ARCH}"/*.rpm >/dev/null 2>&1; then
     log "安装 RPM 包"
-    rpm -Uvh --replacepkgs --nodeps "$ROOT_DIR"/pkgs/*.rpm 2>/dev/null || true
+    rpm -Uvh --replacepkgs --nodeps "$ROOT_DIR"/pkgs/${ARCH}/*.rpm 2>/dev/null || true
   else
     log "RPM 包目录为空或不存在，跳过"
   fi
@@ -268,7 +268,7 @@ fix_oci_tar() {
 
 # 集群安装完成后，将应用镜像导入 K8s containerd
 load_app_images_to_containerd() {
-  if [[ ! -d "${ROOT_DIR}/images" ]]; then
+  if [[ ! -d "${ROOT_DIR}/images/${ARCH}" ]]; then
     log "应用镜像目录不存在，跳过"
     return 0
   fi
@@ -286,7 +286,7 @@ load_app_images_to_containerd() {
       expected_total=$((expected_total + 1))
       local safe
       safe="$(echo "$image" | sed 's/[^A-Za-z0-9_.-]/_/g')"
-      if [[ ! -f "${ROOT_DIR}/images/${safe}.tar" ]]; then
+      if [[ ! -f "${ROOT_DIR}/images/${ARCH}/${safe}.tar" ]]; then
         warn "  [MISSING] images.list 中存在但无 tar 文件: $image"
         missing_tars=$((missing_tars + 1))
       fi
@@ -309,7 +309,7 @@ load_app_images_to_containerd() {
   log "导入应用镜像并推送到 sealos.hub:5000 registry"
 
   local imported=0 failed=0
-  for image_tar in "$ROOT_DIR"/images/*.tar; do
+  for image_tar in "$ROOT_DIR"/images/${ARCH}/*.tar; do
     [[ -f "$image_tar" ]] || continue
     local fname
     fname=$(basename "$image_tar")
@@ -370,7 +370,7 @@ with tarfile.open('$image_tar') as t:
   if [[ $imported -gt 0 ]]; then
     log "验证 registry 中的镜像..."
     local verified=0 verify_failed=0
-    for image_tar in "$ROOT_DIR"/images/*.tar; do
+    for image_tar in "$ROOT_DIR"/images/${ARCH}/*.tar; do
       [[ -f "$image_tar" ]] || continue
       local img_name repo_tag
       img_name=$(python3 -c "

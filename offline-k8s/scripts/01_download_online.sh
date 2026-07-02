@@ -6,9 +6,14 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG_DIR="$ROOT_DIR/config"
-BIN_DIR="$ROOT_DIR/bin"
+# 读取全局架构配置（架构相关目录按架构分目录存放）
+for _p in "$ROOT_DIR/../arch.env" "$ROOT_DIR/config/arch.env"; do
+  if [[ -f "$_p" ]]; then source "$_p"; break; fi
+done
+ARCH="${ARCH:-arm64}"
+BIN_DIR="$ROOT_DIR/bin/${ARCH}"
 TMP_DIR="$ROOT_DIR/tmp"
-IMAGES_DIR="$ROOT_DIR/images"
+IMAGES_DIR="$ROOT_DIR/images/${ARCH}"
 MANIFESTS_DIR="$ROOT_DIR/manifests"
 BUNDLE_DIR="$ROOT_DIR/bundle"
 LOG_DIR="$ROOT_DIR/logs"
@@ -319,7 +324,7 @@ save_app_images() {
 
 download_rpm_packages() {
   log "下载 Kubernetes 相关 RPM 包"
-  local pkgs_dir="$ROOT_DIR/pkgs"
+  local pkgs_dir="$ROOT_DIR/pkgs/${ARCH}"
   mkdir -p "$pkgs_dir"
 
   if command -v dnf >/dev/null 2>&1; then
@@ -361,11 +366,6 @@ main() {
   [ -f "$COMPONENT_VERSIONS" ] || fatal "缺少固定组件版本文件: $COMPONENT_VERSIONS"
   # shellcheck disable=SC1090
   source "$COMPONENT_VERSIONS"
-  # 读取全局架构配置
-  for _p in "$ROOT_DIR/../arch.env" "$ROOT_DIR/config/arch.env"; do
-    if [[ -f "$_p" ]]; then source "$_p"; break; fi
-  done
-  ARCH="${ARCH:-arm64}"
   case "$ARCH" in
     arm64) RPM_ARCH="aarch64"; OCI_PLATFORM="linux/arm64" ;;
     amd64) RPM_ARCH="x86_64"; OCI_PLATFORM="linux/amd64" ;;

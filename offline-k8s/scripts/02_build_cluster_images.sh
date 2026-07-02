@@ -23,7 +23,7 @@ case "$ARCH" in
   *) fatal "不支持的架构: $ARCH" ;;
 esac
 
-SEALOS="${ROOT_DIR}/bin/sealos"
+SEALOS="${ROOT_DIR}/bin/${ARCH}/sealos"
 
 check_sealos() {
   if [[ ! -x "$SEALOS" ]]; then

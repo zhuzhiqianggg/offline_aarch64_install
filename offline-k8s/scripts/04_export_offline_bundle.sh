@@ -36,16 +36,37 @@ prepare_bundle_dir() {
   rm -rf "$STAGING_DIR"
   mkdir -p "$STAGING_DIR"
 
-  local items=(
-    "bin:可执行文件 (sealos, helm)"
-    "config:配置文件和版本锁定"
-    "images:应用镜像 tar 包"
-    "sealos-images:K8s cluster images"
-    "manifests:K8s manifest 文件"
-    "pkgs:RPM 系统依赖包"
+  # 架构相关目录（只复制当前架构）
+  local arch_items=(
+    "bin/${ARCH}:可执行文件 (sealos, helm)"
+    "images/${ARCH}:应用镜像 tar 包"
+    "sealos-images/${ARCH}:K8s cluster images"
+    "pkgs/${ARCH}:RPM 系统依赖包"
   )
 
-  for item in "${items[@]}"; do
+  # 架构无关目录
+  local common_items=(
+    "config:配置文件和版本锁定"
+    "manifests:K8s manifest 文件"
+  )
+
+  # 复制架构相关目录
+  for item in "${arch_items[@]}"; do
+    local dir="${item%%:*}"
+    local label="${item#*:}"
+    local src="${ROOT_DIR}/${dir}"
+    if [[ -d "$src" ]] && [[ -n "$(ls -A "$src" 2>/dev/null)" ]]; then
+      # 创建父目录后复制，保持架构子目录
+      mkdir -p "$STAGING_DIR/$(dirname "$dir")"
+      cp -a "$src" "$STAGING_DIR/${dir}"
+      log "  [OK] $dir ($label)"
+    else
+      log "  [SKIP] $dir ($label) - 目录为空或不存在"
+    fi
+  done
+
+  # 复制架构无关目录
+  for item in "${common_items[@]}"; do
     local dir="${item%%:*}"
     local label="${item#*:}"
     local src="${ROOT_DIR}/${dir}"
@@ -59,10 +80,10 @@ prepare_bundle_dir() {
 
   # 验证关键文件存在
   local required=(
-    "bin/sealos"
+    "bin/${ARCH}/sealos"
     "config/versions.lock"
-    "sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
-    "sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar"
+    "sealos-images/${ARCH}/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
+    "sealos-images/${ARCH}/calico-${CALICO_VERSION}-${ARCH}.tar"
     "manifests/ingress-nginx/deploy.yaml"
   )
   local missing=0

@@ -17,7 +17,7 @@ fatal() { error "$*"; exit 1; }
 # shellcheck disable=SC1090
 source "$VERSIONS_LOCK"
 
-SEALOS="${ROOT_DIR}/bin/sealos"
+SEALOS="${ROOT_DIR}/bin/${ARCH}/sealos"
 
 get_master_ip() {
   local ip
@@ -136,7 +136,7 @@ load_app_images() {
   log "导入到 containerd k8s.io namespace..."
 
   local imported=0 failed=0
-  for image_tar in "$ROOT_DIR"/images/*.tar; do
+  for image_tar in "$ROOT_DIR"/images/${ARCH}/*.tar; do
     [[ -f "$image_tar" ]] || continue
     local fname
     fname=$(basename "$image_tar")

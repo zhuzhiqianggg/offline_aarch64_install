@@ -5,22 +5,29 @@
 set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+# 读取全局架构配置 (项目根目录 → bundle 根目录 → 包内 config)
+for _p in "$ROOT_DIR/../arch.env" "$ROOT_DIR/arch.env" "$ROOT_DIR/config/arch.env"; do
+  if [[ -f "$_p" ]]; then source "$_p"; break; fi
+done
+ARCH="${ARCH:-arm64}"
+IMAGES_DIR="$ROOT_DIR/images/${ARCH}"
+
 log()  { printf '[%s] %s\n' "$(date '+%F %T')" "$*"; }
 warn() { printf '[%s] WARN: %s\n' "$(date '+%F %T')" "$*"; }
 fatal(){ printf '[%s] ERROR: %s\n' "$(date '+%F %T')" "$*"; exit 1; }
 
 command -v docker >/dev/null 2>&1 || fatal "未安装 docker，请先安装 offline-docker 包"
 
-[[ -d "$ROOT_DIR/images" ]] || fatal "缺少镜像目录: $ROOT_DIR/images，请先在在线机器执行 scripts/download_database_images.sh"
+[[ -d "$IMAGES_DIR" ]] || fatal "缺少镜像目录: $IMAGES_DIR，请先在在线机器执行 scripts/download_database_images.sh"
 
 shopt -s nullglob
-image_tars=("$ROOT_DIR"/images/*.tar)
-[[ ${#image_tars[@]} -gt 0 ]] || fatal "未找到数据库镜像 tar 包: $ROOT_DIR/images/*.tar"
+image_tars=("$IMAGES_DIR"/*.tar)
+[[ ${#image_tars[@]} -gt 0 ]] || fatal "未找到数据库镜像 tar 包: $IMAGES_DIR/*.tar"
 
-sha_file="$ROOT_DIR/images/sha256sum.txt"
+sha_file="$IMAGES_DIR/sha256sum.txt"
 if [[ -f "$sha_file" ]]; then
   log "校验镜像 sha256: $sha_file"
-  (cd "$ROOT_DIR/images" && sha256sum -c sha256sum.txt) || fatal "镜像 sha256 校验失败，请重新下载或检查文件完整性"
+  (cd "$IMAGES_DIR" && sha256sum -c sha256sum.txt) || fatal "镜像 sha256 校验失败，请重新下载或检查文件完整性"
 fi
 
 log "开始导入 ${#image_tars[@]} 个镜像 (并行导入)"
@@ -91,7 +98,7 @@ verify_image() {
 }
 
 # 根据 tar 文件列表自动提取镜像名
-for image_tar in "$ROOT_DIR"/images/*.tar; do
+for image_tar in "$IMAGES_DIR"/*.tar; do
   [[ -f "$image_tar" ]] || continue
   img_name=$(tar -xf "$image_tar" manifest.json -O 2>/dev/null | python3 -c "
 import json, sys
