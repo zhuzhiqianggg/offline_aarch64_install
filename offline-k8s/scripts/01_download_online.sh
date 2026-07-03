@@ -25,6 +25,7 @@ LOG_FILE="$LOG_DIR/download-online-$(date +%Y%m%d%H%M%S).log"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 log() { printf '[%s] %s\n' "$(date '+%F %T')" "$*"; }
+warn() { printf '[%s] WARN: %s\n' "$(date '+%F %T')" "$*" >&2; }
 fatal() { log "ERROR: $*"; exit 1; }
 need_cmd() { command -v "$1" >/dev/null 2>&1 || fatal "缺少命令: $1"; }
 
@@ -109,7 +110,7 @@ VERSION_POLICY=$VERSION_POLICY
 ALLOW_PRERELEASE=$ALLOW_PRERELEASE
 AUTO_UPGRADE=${AUTO_UPGRADE:-false}
 SEALOS_VERSION=$SEALOS_VERSION
-KUBERNETES_MINOR=${KUBERNETES_MINOR:-}
+KUBERNETES_MINOR=${KUBERNETES_MINOR:-1.33}
 KUBERNETES_VERSION=$KUBERNETES_VERSION
 CALICO_VERSION=$CALICO_VERSION
 INGRESS_NGINX_VERSION=$INGRESS_NGINX_VERSION
@@ -163,6 +164,13 @@ pull_sealos_images() {
   local kube_img="docker.io/labring/kubernetes:${KUBERNETES_VERSION}"
   local calico_img="docker.io/labring/calico:${CALICO_VERSION}"
 
+  # 在 arm64 主机上无法执行 amd64 sealos 二进制，跳过 cluster image 拉取
+  if [[ "$ARCH" != "$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')" ]]; then
+    log "跳过 sealos cluster image (本机架构 $(uname -m) 与目标架构 ${ARCH} 不一致)"
+    log "  需在 ${ARCH} 主机上重新执行本脚本以拉取 cluster image"
+    return 1
+  fi
+
   log "检查 Kubernetes cluster image: $kube_img"
   if ! "$sealos" pull "$kube_img" 2>/dev/null; then
     log "sealos/labring 未提供 ${KUBERNETES_VERSION} 预构建 cluster image，尝试构建自定义镜像"
@@ -175,10 +183,10 @@ pull_sealos_images() {
     return 1
   fi
 
-  mkdir -p "$ROOT_DIR/sealos-images"
+  mkdir -p "$ROOT_DIR/sealos-images/${ARCH}"
   log "导出 sealos cluster images"
-  "$sealos" save -o "$ROOT_DIR/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" "$kube_img"
-  "$sealos" save -o "$ROOT_DIR/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar" "$calico_img"
+  "$sealos" save -o "$ROOT_DIR/sealos-images/${ARCH}/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" "$kube_img"
+  "$sealos" save -o "$ROOT_DIR/sealos-images/${ARCH}/calico-${CALICO_VERSION}-${ARCH}.tar" "$calico_img"
   return 0
 }
 
@@ -221,8 +229,25 @@ EOF
 }
 
 download_manifests() {
-  log "下载 ingress-nginx manifest"
-  curl -fL --retry 3 "https://raw.githubusercontent.com/kubernetes/ingress-nginx/${INGRESS_NGINX_VERSION}/deploy/static/provider/cloud/deploy.yaml" -o "$MANIFESTS_DIR/ingress-nginx/deploy.yaml"
+  local manifest="$MANIFESTS_DIR/ingress-nginx/deploy.yaml"
+
+  # 若已存在定制过的 manifest (允许 snippet annotations), 不重复下载覆盖
+  if [[ -f "$manifest" ]] && grep -q "allow-snippet-annotations" "$manifest"; then
+    log "ingress-nginx manifest 已包含离线定制，跳过下载: $manifest"
+  else
+    log "下载 ingress-nginx manifest"
+    curl -fL --retry 3 "https://raw.githubusercontent.com/kubernetes/ingress-nginx/${INGRESS_NGINX_VERSION}/deploy/static/provider/cloud/deploy.yaml" -o "$manifest"
+    # 重新应用离线定制 (避免上游 cloud/deploy.yaml 覆盖)
+    #   - ConfigMap: 启用 allow-snippet-annotations + annotations-risk-level
+    #                 (application ingress 依赖 nginx.ingress.kubernetes.io/configuration-snippet)
+    #   - 控制器:   DaemonSet + hostNetwork + tolerations (匹配单机 K8s 部署)
+    #   - Service:  ClusterIP (宿主机 80/443 由 hostNetwork 直绑)
+    if [[ -f "$ROOT_DIR/scripts/patch_ingress_manifest.py" ]]; then
+      python3 "$ROOT_DIR/scripts/patch_ingress_manifest.py" "$manifest"
+    else
+      log "  WARN: 未找到 $ROOT_DIR/scripts/patch_ingress_manifest.py，跳过定制"
+    fi
+  fi
 
   log "Kuboard v4 K8s manifest 已内置在 manifests/kuboard/kuboard-v4.yaml"
   log "  - 镜像: swr.cn-east-2.myhuaweicloud.com/kuboard/kuboard:v4"
@@ -236,20 +261,39 @@ root=pathlib.Path(sys.argv[1])
 out=pathlib.Path(sys.argv[2])
 images=set()
 
-IMAGE_RE = re.compile(r'image:\s*["\']?([^"\'\s]+)')
-ARG_IMAGE_RE = re.compile(r'--[\w-]+=(?:[^/]+/)+(?:[^/]+):\S+')
+# image: field — registry/path:tag (registry may include port)
+IMAGE_RE = re.compile(r'image:\s*["\']?((?:[A-Za-z0-9._-]+(?::[0-9]+)?\/)+[A-Za-z0-9._/-]+:[A-Za-z0-9._-]+)["\']?')
+# --flag=value  形式 (例如 --image=, --prometheus-config-reloader=)
+# value 必须形如 registry/path:tag
+ARG_IMAGE_RE = re.compile(r'--[A-Za-z0-9_-]+=((?:[A-Za-z0-9._-]+(?::[0-9]+)?\/)+[A-Za-z0-9._/-]+:[A-Za-z0-9._-]+)')
+
+URL_PREFIXES = ('http://', 'https://', 'tcp://', 'udp://', 'unix://', 'file://', 'git://')
+
+def is_valid_image(val: str) -> bool:
+    if '{{' in val or '}}' in val:
+        return False
+    if val.lower().startswith(URL_PREFIXES):
+        return False
+    # 必须包含至少一个 /（registry/path 结构）
+    if '/' not in val:
+        return False
+    # 必须有 tag（即 : 且后面非空）
+    if ':' not in val.split('/')[-1]:
+        return False
+    return True
 
 for path in root.rglob('*'):
     if not path.is_file():
         continue
     text = path.read_text(errors='ignore')
-    # match standard image: fields
     for m in IMAGE_RE.finditer(text):
-        images.add(m.group(1))
-    # match CLI --flag=registry/repo:tag patterns
+        val = m.group(1)
+        if is_valid_image(val):
+            images.add(val)
     for m in ARG_IMAGE_RE.finditer(text):
-        val = m.group(0).split('=', 1)[1]
-        images.add(val)
+        val = m.group(1)
+        if is_valid_image(val):
+            images.add(val)
 
 out.write_text('\n'.join(sorted(images)) + ('\n' if images else ''))
 PY
@@ -301,22 +345,59 @@ save_app_images() {
     runtime=podman
   fi
 
+  # 跨架构拉取优先使用 skopeo (docker:// -> docker-archive)，
+  # 避免 docker pull + docker save 在跨平台场景下出现 "manifests file: NotFound" 错误
+  local use_skopeo=false
+  if command -v skopeo >/dev/null 2>&1; then
+    # skopeo 1.5+ 即可满足 docker:// -> docker-archive 的需求
+    if skopeo --version 2>/dev/null | grep -qE '^skopeo version'; then
+      use_skopeo=true
+    fi
+  fi
+
   while read -r image; do
     [[ -n "$image" ]] || continue
     [[ "$image" == \#* ]] && continue
     local safe
     safe="$(echo "$image" | sed 's/[^A-Za-z0-9_.-]/_/g')"
-    if [ -n "$runtime" ]; then
-      log "拉取应用镜像: $image"
-      "$runtime" pull --platform "$OCI_PLATFORM" "$image"
-      "$runtime" save -o "$IMAGES_DIR/${safe}.tar" "$image"
+    local out="$IMAGES_DIR/${safe}.tar"
+
+    if [[ "$use_skopeo" == "true" ]]; then
+      log "拉取应用镜像 (skopeo): $image"
+      if ! skopeo copy \
+            --override-os linux --override-arch "${ARCH}" \
+            "docker://${image}" "docker-archive:${out}:${image}" \
+            2>/tmp/save_err; then
+        printf '[%s] WARN: %s\n' "$(date '+%F %T')" "  skopeo copy 失败，跳过: $image" >&2
+        printf '[%s] WARN: %s\n' "$(date '+%F %T')" "    $(cat /tmp/save_err | head -1)" >&2
+        continue
+      fi
+    elif [ -n "$runtime" ]; then
+      log "拉取应用镜像 (docker): $image"
+      if ! "$runtime" pull --platform "$OCI_PLATFORM" "$image"; then
+        printf '[%s] WARN: %s\n' "$(date '+%F %T')" "  pull 失败，跳过: $image" >&2
+        continue
+      fi
+      if ! "$runtime" save -o "$out" "$image" 2>/tmp/save_err; then
+        printf '[%s] WARN: %s\n' "$(date '+%F %T')" "  save 失败 (清理后重试): $image" >&2
+        printf '[%s] WARN: %s\n' "$(date '+%F %T')" "    $(cat /tmp/save_err | head -1)" >&2
+        "$runtime" rmi -f "$image" 2>/dev/null || true
+        if "$runtime" pull --platform "$OCI_PLATFORM" "$image" 2>/dev/null && \
+           "$runtime" save -o "$out" "$image" 2>/tmp/save_err2; then
+          log "  重试成功: $image"
+        else
+          printf '[%s] WARN: %s\n' "$(date '+%F %T')" "  重试仍失败，跳过: $image" >&2
+          printf '[%s] WARN: %s\n' "$(date '+%F %T')" "    $(cat /tmp/save_err2 2>/dev/null | head -1)" >&2
+          continue
+        fi
+      fi
     else
       log "使用 sealos 拉取并导出应用镜像: $image"
       "$BIN_DIR/sealos" pull "$image"
-      "$BIN_DIR/sealos" save -o "$IMAGES_DIR/${safe}.tar" "$image"
+      "$BIN_DIR/sealos" save -o "$out" "$image"
     fi
     # 移除 index.json/oci-layout，确保 tar 为纯 docker-archive 格式
-    fix_oci_tar "$IMAGES_DIR/${safe}.tar"
+    fix_oci_tar "$out"
   done < "$CONFIG_DIR/images.list"
 
   verify_saved_images

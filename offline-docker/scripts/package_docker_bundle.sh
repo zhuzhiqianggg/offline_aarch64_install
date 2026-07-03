@@ -3,7 +3,6 @@
 
 set -euo pipefail
 ROOT_DIR="${ROOT_DIR:-/opt/install/offline-docker}"
-BUNDLE_DIR="$ROOT_DIR/bundle"
 TS=$(date +%Y%m%d%H%M%S)
 
 # 读取全局架构配置 (项目根目录 → bundle 根目录 → 包内 config)
@@ -17,13 +16,19 @@ case "$ARCH" in
   *) echo "不支持的架构: $ARCH"; exit 1 ;;
 esac
 
+# 全局 bundle 目录: /opt/install/bundle/${ARCH}/docker/
+GLOBAL_BUNDLE_ROOT="$ROOT_DIR/../bundle"
+BUNDLE_DIR="$GLOBAL_BUNDLE_ROOT/$ARCH/docker"
 OUT_DIR="$BUNDLE_DIR/offline-docker-${PKG_ARCH}"
 
 log() { printf '[%s] %s\n' "$(date '+%F %T')" "$*"; }
 warn() { printf '[%s] WARN: %s\n' "$(date '+%F %T')" "$*"; }
 
-rm -rf "$OUT_DIR"
-mkdir -p "$OUT_DIR"/{bin,pkgs,scripts}
+# 清理该架构下该类型的所有历史 bundle（保留当前正在生成的）
+rm -rf "$OUT_DIR" \
+       "$BUNDLE_DIR"/offline-docker-${PKG_ARCH}-*.tar.gz \
+       "$BUNDLE_DIR"/offline-docker-${PKG_ARCH}-*.tar.gz.sha256
+mkdir -p "$BUNDLE_DIR" "$OUT_DIR"/{bin,pkgs,scripts}
 
 # 复制架构相关的 bin 和 pkgs（只复制当前架构）
 for dir in bin/${ARCH} pkgs/${ARCH}; do
@@ -59,4 +64,5 @@ EOF
 (cd "$OUT_DIR" && find . -type f -print0 | sort -z | xargs -0 sha256sum > sha256sum.txt)
 (cd "$BUNDLE_DIR" && tar -czf "offline-docker-${PKG_ARCH}-${TS}.tar.gz" "offline-docker-${PKG_ARCH}")
 sha256sum "$BUNDLE_DIR/offline-docker-${PKG_ARCH}-${TS}.tar.gz" > "$BUNDLE_DIR/offline-docker-${PKG_ARCH}-${TS}.tar.gz.sha256"
+rm -rf "$OUT_DIR"
 log "完成: $BUNDLE_DIR/offline-docker-${PKG_ARCH}-${TS}.tar.gz"

@@ -1,5 +1,5 @@
-ARCH=arm64
-RPM_ARCH=aarch64
+ARCH=amd64
+RPM_ARCH=x86_64
 VERSION_POLICY=fixed-reviewed
 ALLOW_PRERELEASE=false
 AUTO_UPGRADE=false

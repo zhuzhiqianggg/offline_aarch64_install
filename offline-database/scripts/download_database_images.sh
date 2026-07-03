@@ -61,7 +61,7 @@ for image in "${IMAGES[@]}"; do
 
   # 拉取镜像（带重试）
   log "[PULL] $image"
-  local pull_ok=false
+  pull_ok=false
   for attempt in $(seq 1 $MAX_RETRIES); do
     if docker pull --platform "$OCI_PLATFORM" "$image" 2>&1; then
       pull_ok=true

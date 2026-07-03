@@ -31,7 +31,9 @@ esac
 
 CONF_FILE="${CONF_FILE:-$ROOT_DIR/images.conf}"
 IMAGES_DIR="$ROOT_DIR/images"
-BUNDLE_DIR="$ROOT_DIR/bundle"
+# 全局 bundle 目录: /opt/install/bundle/${ARCH}/apps/
+GLOBAL_BUNDLE_ROOT="$ROOT_DIR/../bundle"
+BUNDLE_DIR="$GLOBAL_BUNDLE_ROOT/$ARCH/apps"
 SCRIPTS_DIR="$ROOT_DIR/scripts"
 MAX_RETRIES=3
 TS=$(date +%Y%m%d%H%M%S)
@@ -45,6 +47,11 @@ command -v docker >/dev/null 2>&1 || fatal "缺少 docker 命令"
 [[ -f "$SCRIPTS_DIR/load_app_images.sh" ]] || fatal "缺少 load_app_images.sh: $SCRIPTS_DIR/load_app_images.sh"
 
 mkdir -p "$IMAGES_DIR" "$BUNDLE_DIR"
+
+# 清理该架构下该类型的所有历史 bundle (保留当前正在生成的)
+rm -rf "$BUNDLE_DIR"/offline-app-images-${PKG_ARCH} \
+       "$BUNDLE_DIR"/offline-app-images-${PKG_ARCH}-*.tar.gz \
+       "$BUNDLE_DIR"/offline-app-images-${PKG_ARCH}-*.tar.gz.sha256
 
 # ─── 解析镜像清单 ───
 # 去除注释 (# 之后内容) 后，正则提取所有 registry/path:tag (host 含 .)

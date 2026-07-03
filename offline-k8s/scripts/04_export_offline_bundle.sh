@@ -7,7 +7,15 @@ set -euo pipefail
 ROOT_DIR="${ROOT_DIR:-/opt/install/offline-k8s}"
 CONFIG_DIR="$ROOT_DIR/config"
 VERSIONS_LOCK="$CONFIG_DIR/versions.lock"
-BUNDLE_DIR="$ROOT_DIR/bundle"
+
+# 读取全局架构配置 (项目根目录 → bundle 根目录)
+for _p in "$ROOT_DIR/../arch.env" "$ROOT_DIR/arch.env"; do
+  if [[ -f "$_p" ]]; then source "$_p"; break; fi
+done
+ARCH="${ARCH:-arm64}"
+# 全局 bundle 目录: /opt/install/bundle/${ARCH}/k8s/
+GLOBAL_BUNDLE_ROOT="$ROOT_DIR/../bundle"
+BUNDLE_DIR="$GLOBAL_BUNDLE_ROOT/$ARCH/k8s"
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
 log()  { printf '[%s] %s\n' "$(date '+%F %T')" "$*"; }
@@ -21,6 +29,12 @@ source "$VERSIONS_LOCK"
 
 STAGING_NAME="k8s-offline-openEuler-${RPM_ARCH}"
 STAGING_DIR="$BUNDLE_DIR/$STAGING_NAME"
+
+# 清理该架构下该类型的所有历史 bundle
+rm -rf "$STAGING_DIR" \
+       "$BUNDLE_DIR"/k8s-offline-openEuler-${RPM_ARCH}-*.tar.gz \
+       "$BUNDLE_DIR"/k8s-offline-openEuler-${RPM_ARCH}-*.tar.gz.sha256
+mkdir -p "$BUNDLE_DIR"
 
 # 使用 pigz 并行压缩（如可用）
 GZIP_CMD="gzip"
@@ -81,16 +95,25 @@ prepare_bundle_dir() {
   # 验证关键文件存在
   local required=(
     "bin/${ARCH}/sealos"
+    "bin/${ARCH}/helm"
     "config/versions.lock"
+    "manifests/ingress-nginx/deploy.yaml"
+  )
+  local optional_arch=(
     "sealos-images/${ARCH}/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
     "sealos-images/${ARCH}/calico-${CALICO_VERSION}-${ARCH}.tar"
-    "manifests/ingress-nginx/deploy.yaml"
   )
   local missing=0
   for f in "${required[@]}"; do
     if [[ ! -f "$STAGING_DIR/$f" ]]; then
       warn "缺失关键文件: $f"
       missing=$((missing + 1))
+    fi
+  done
+  # sealos cluster image 跨架构场景下可能缺失 (在 amd64 主机上重新执行 01_download 可补全)
+  for f in "${optional_arch[@]}"; do
+    if [[ ! -f "$STAGING_DIR/$f" ]]; then
+      warn "缺失非必要文件: $f (跨架构下载 sealos cluster image 受限，需在 ${ARCH} 主机上补全)"
     fi
   done
   if [[ $missing -gt 0 ]]; then

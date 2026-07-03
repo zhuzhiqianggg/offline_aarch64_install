@@ -1,21 +1,17 @@
-# K8s 基础组件镜像清单
-# 由 01_download_online.sh 的 extract_image_list() 自动生成 + 手工补全
-# 行内注释 (#) 会被脚本跳过
-registry.k8s.io/ingress-nginx/controller:v1.15.1
-registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9
-registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
-registry.k8s.io/metrics-server/metrics-server:v0.7.1
-# kube-prometheus v0.18.0 (Prometheus monitoring stack)
-quay.io/prometheus-operator/prometheus-operator:v0.92.0
-quay.io/prometheus-operator/prometheus-config-reloader:v0.92.0
+ghcr.io/jimmidyson/configmap-reload:v0.15.0
+grafana/grafana:13.0.2
+quay.io/brancz/kube-rbac-proxy:v0.22.0
 quay.io/prometheus/alertmanager:v0.33.0
 quay.io/prometheus/blackbox-exporter:v0.28.0
 quay.io/prometheus/node-exporter:v1.11.1
+quay.io/prometheus-operator/prometheus-config-reloader:v0.92.0
+quay.io/prometheus-operator/prometheus-operator:v0.92.0
 quay.io/prometheus/prometheus:v3.12.0
+registry.k8s.io/ingress-nginx/controller:v1.15.1
+registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.9
 registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.19.0
+registry.k8s.io/metrics-server/metrics-server:v0.7.1
 registry.k8s.io/prometheus-adapter/prometheus-adapter:v0.12.0
-docker.io/grafana/grafana:13.0.2
-ghcr.io/jimmidyson/configmap-reload:v0.15.0
-quay.io/brancz/kube-rbac-proxy:v0.22.0
-swr.cn-east-2.myhuaweicloud.com/kuboard/mariadb:11.3.2-jammy
+registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
 swr.cn-east-2.myhuaweicloud.com/kuboard/kuboard:v4
+swr.cn-east-2.myhuaweicloud.com/kuboard/mariadb:11.3.2-jammy

@@ -610,24 +610,33 @@ bash scripts/01_download_online.sh
 /opt/install/
 ├── README.md                              # 本文档
 ├── OFFLINE_DEPLOYMENT_HANDOVER.md         # 开发交接文档
-├── offline-k8s/                           # K8s 离线包
+├── arch.env                               # ★ 全局架构配置 (arm64|amd64)
+├── bundle/                                # ★ 全局离线包输出目录 (按架构+类型组织)
+│   ├── amd64/
+│   │   ├── docker/                        # Docker 离线包 (x86_64)
+│   │   ├── k8s/                           # K8s 离线包 (x86_64)
+│   │   └── database/                      # 数据库离线包 (x86_64)
+│   └── arm64/
+│       ├── docker/                        # Docker 离线包 (aarch64)
+│       ├── k8s/                           # K8s 离线包 (aarch64)
+│       ├── database/                      # 数据库离线包 (aarch64)
+│       └── apps/                          # 业务应用离线包
+├── offline-k8s/                           # K8s 离线包源码
 │   ├── scripts/
 │   │   ├── install_offline.sh             # 一键安装（含 Kuboard v4）
 │   │   ├── cleanup_test_cluster.sh        # 集群清理
 │   │   └── ...
 │   ├── manifests/                         # K8s YAML 清单
-│   ├── pkgs/                              # RPM 依赖包
-│   └── bundle/                            # 最终离线包
-├── offline-docker/                        # Docker 离线包
+│   └── pkgs/                              # RPM 依赖包
+├── offline-docker/                        # Docker 离线包源码
 │   ├── scripts/
 │   │   ├── install_docker_offline.sh       # Docker 安装脚本（含 buildx）
 │   │   └── package_docker_bundle.sh        # 打包脚本
 │   ├── bin/                               # CLI 插件二进制
 │   │   ├── docker-compose                 # Compose v2.36.1
 │   │   └── docker-buildx                  # Buildx v0.25.0
-│   ├── pkgs/                              # Docker Engine 二进制
-│   └── bundle/                            # 最终离线包
-├── offline-database/                      # Database 离线包
+│   └── pkgs/                              # Docker Engine 二进制
+├── offline-database/                      # Database 离线包源码
 │   ├── scripts/
 │   │   ├── install_db.sh                 # 一键部署入口（加载镜像+启动+健康检查）
 │   │   ├── load_database_images.sh        # 镜像导入（含 sha256 校验）
@@ -641,10 +650,17 @@ bash scripts/01_download_online.sh
 │   │   ├── nebulagraph/                   # 单机版（自动注册 storage）
 │   │   └── nebulagraph-cluster/           # 集群版（host 网络，需 .env）
 │   ├── images/                            # 镜像 tar 包
-│   ├── third-party/                       # 第三方组件占位
-│   ├── .password                          # 部署后生成的连接信息
-│   └── bundle/                            # 最终离线包
+│   └── third-party/                       # 第三方组件占位
+└── offline-apps/                          # 业务应用离线打包
+    ├── apps.conf                          # namespace 列表
+    └── images.conf                        # 镜像清单
 ```
+
+### Bundle 输出策略
+- **路径**：`bundle/{arch}/{type}/` 全局唯一
+- **命名**：`{name}-{arch}-{timestamp}.tar.gz` + `.sha256`
+- **清理**：每次打包前自动删除该路径下的历史版本，只保留最新
+- **架构切换**：编辑 `arch.env` 中的 `ARCH=` 即可，无需手动改各子项目配置
 
 ---
 
@@ -675,7 +691,7 @@ NAMESPACES=app1,app2 ./scripts/export_apps.sh
 
 打包完成后生成：
 ```
-bundle/offline-apps-<namespace>-<时间戳>.tar.gz
+bundle/{ARCH}/apps/offline-app-images-{arch}-<时间戳>.tar.gz
 ├── manifests/          # 按 namespace 分目录的 YAML
 │   ├── app1/
 │   │   ├── deployment_xxx.yaml
