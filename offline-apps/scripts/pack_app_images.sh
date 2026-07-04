@@ -53,6 +53,16 @@ rm -rf "$BUNDLE_DIR"/offline-app-images-${PKG_ARCH} \
        "$BUNDLE_DIR"/offline-app-images-${PKG_ARCH}-*.tar.gz \
        "$BUNDLE_DIR"/offline-app-images-${PKG_ARCH}-*.tar.gz.sha256
 
+# 清理孤儿 .sha256: 上一次异常中断可能留下没有对应 tar.gz 的 .sha256 文件
+for sha in "$BUNDLE_DIR"/offline-app-images-${PKG_ARCH}-*.tar.gz.sha256; do
+  [[ -f "$sha" ]] || continue
+  tar="${sha%.sha256}"
+  if [[ ! -f "$tar" ]]; then
+    warn "清理孤儿 .sha256: $(basename "$sha")"
+    rm -f "$sha"
+  fi
+done
+
 # ─── 解析镜像清单 ───
 # 去除注释 (# 之后内容) 后，正则提取所有 registry/path:tag (host 含 .)
 mapfile -t IMAGES < <(sed 's/#.*//' "$CONF_FILE" \

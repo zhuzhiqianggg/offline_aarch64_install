@@ -30,6 +30,16 @@ rm -rf "$OUT_DIR" \
        "$BUNDLE_DIR"/offline-docker-${PKG_ARCH}-*.tar.gz.sha256
 mkdir -p "$BUNDLE_DIR" "$OUT_DIR"/{bin,pkgs,scripts}
 
+# 清理孤儿 .sha256: 上一次异常中断可能留下没有对应 tar.gz 的 .sha256 文件
+for sha in "$BUNDLE_DIR"/offline-docker-${PKG_ARCH}-*.tar.gz.sha256; do
+  [[ -f "$sha" ]] || continue
+  tar="${sha%.sha256}"
+  if [[ ! -f "$tar" ]]; then
+    warn "清理孤儿 .sha256: $(basename "$sha")"
+    rm -f "$sha"
+  fi
+done
+
 # 复制架构相关的 bin 和 pkgs（只复制当前架构）
 for dir in bin/${ARCH} pkgs/${ARCH}; do
   if [[ -d "$ROOT_DIR/$dir" ]]; then

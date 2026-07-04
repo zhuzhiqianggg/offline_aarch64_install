@@ -36,6 +36,16 @@ rm -rf "$STAGING_DIR" \
        "$BUNDLE_DIR"/k8s-offline-openEuler-${RPM_ARCH}-*.tar.gz.sha256
 mkdir -p "$BUNDLE_DIR"
 
+# 清理孤儿 .sha256: 上一次异常中断可能留下没有对应 tar.gz 的 .sha256 文件
+for sha in "$BUNDLE_DIR"/k8s-offline-openEuler-${RPM_ARCH}-*.tar.gz.sha256; do
+  [[ -f "$sha" ]] || continue
+  tar="${sha%.sha256}"
+  if [[ ! -f "$tar" ]]; then
+    warn "清理孤儿 .sha256: $(basename "$sha")"
+    rm -f "$sha"
+  fi
+done
+
 # 使用 pigz 并行压缩（如可用）
 GZIP_CMD="gzip"
 if command -v pigz >/dev/null 2>&1; then

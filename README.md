@@ -22,14 +22,29 @@
 
 ### 交付文件说明
 
-每个包的最终交付物是 `bundle/` 目录下的 **tar.gz 文件**（含 .sha256 校验文件）。
+每个包的最终交付物在**全局 bundle 目录** `/opt/install/bundle/{arch}/{type}/` 下：
+
+```
+/opt/install/bundle/
+├── arm64/                       # ARM64 离线包
+│   ├── apps/                    # 业务应用镜像包
+│   ├── database/                # 数据库/中间件包
+│   ├── docker/                  # Docker 离线包
+│   └── k8s/                     # K8s 离线包
+└── amd64/                       # AMD64 离线包
+    ├── database/
+    ├── docker/
+    └── k8s/
+```
+
 传输到目标服务器时，**只需传 tar.gz 文件**，不需要传整个项目目录。
 
-| 包名 | tar.gz 文件 | 大小 |
-|------|------------|------|
-| K8s | `k8s-offline-openEuler-aarch64-*.tar.gz` | ~1.4G |
-| Docker | `offline-docker-aarch64-*.tar.gz` | ~155M |
-| Database | `offline-database-aarch64-*.tar.gz` | ~1.1G |
+| 包名 | tar.gz 文件 | 大小（ARM64 / AMD64） |
+|------|------------|-----------------|
+| K8s | `k8s-offline-openEuler-{aarch64\|x86_64}-*.tar.gz` | ~1.9G / ~1.3G |
+| Docker | `offline-docker-{aarch64\|x86_64}-*.tar.gz` | ~112M / ~85M |
+| Database | `offline-database-{aarch64\|x86_64}-*.tar.gz` | ~1.1G / ~1.9G |
+| Apps | `offline-app-images-{aarch64\|x86_64}-*.tar.gz` | ~1.5G / - |
 | Kuboard | *已整合到 K8s 包中* | - |
 
 ```bash
