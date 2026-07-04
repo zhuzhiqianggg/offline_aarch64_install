@@ -22,10 +22,18 @@ log()  { printf '[%s] %s\n' "$(date '+%F %T')" "$*"; }
 warn() { printf '[%s] WARN: %s\n' "$(date '+%F %T')" "$*"; }
 fatal() { log "ERROR: $*"; exit 1; }
 
-# 加载版本锁定
+# 加载版本锁定 (保存 arch.env 的 ARCH，防止 versions.lock 覆盖)
 [[ -f "$VERSIONS_LOCK" ]] || fatal "缺少版本锁定文件: $VERSIONS_LOCK"
+_ARCH_FROM_ENV="${ARCH:-}"
 # shellcheck disable=SC1090
 source "$VERSIONS_LOCK"
+[[ -n "$_ARCH_FROM_ENV" ]] && ARCH="$_ARCH_FROM_ENV"
+# 根据 ARCH 重新推导 RPM_ARCH (不信任 versions.lock 中的硬编码值)
+case "$ARCH" in
+  arm64) RPM_ARCH="aarch64" ;;
+  amd64) RPM_ARCH="x86_64" ;;
+  *) fatal "不支持的架构: $ARCH" ;;
+esac
 
 STAGING_NAME="k8s-offline-openEuler-${RPM_ARCH}"
 STAGING_DIR="$BUNDLE_DIR/$STAGING_NAME"
@@ -140,7 +148,9 @@ copy_scripts() {
   log "  [OK] install_offline.sh"
 
   if [[ -d "${ROOT_DIR}/scripts" ]]; then
-    cp -a "${ROOT_DIR}/scripts/." "$STAGING_DIR/scripts/"
+    # 排除 __pycache__ 和 .pyc 文件
+    (cd "${ROOT_DIR}/scripts" && find . -type f -not -path '*/__pycache__/*' -not -name '*.pyc' -print0 | \
+      tar --null -cf - -T - | tar -xf - -C "$STAGING_DIR/scripts/")
     chmod +x "$STAGING_DIR/scripts/"*.sh 2>/dev/null || true
     log "  [OK] scripts/ 目录"
   fi

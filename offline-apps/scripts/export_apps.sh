@@ -21,7 +21,21 @@ fatal(){ printf '[%s] FATAL: %s\n' "$(date '+%F %T')" "$*" >&2; exit 1; }
 
 # 默认参数
 NAMESPACES="${NAMESPACES:-}"
+
+# 读取全局架构配置，归一化为 OCI 格式 (arm64/amd64)
+for _p in "$ROOT_DIR/../arch.env" "$ROOT_DIR/arch.env"; do
+  if [[ -f "$_p" ]]; then
+    # shellcheck disable=SC1090
+    source "$_p"
+    break
+  fi
+done
 ARCH="${ARCH:-$(uname -m)}"
+# 归一化: aarch64 -> arm64, x86_64 -> amd64 (OCI 平台用 arm64/amd64)
+case "$ARCH" in
+  aarch64|arm64) ARCH="arm64" ;;
+  x86_64|amd64)  ARCH="amd64" ;;
+esac
 
 # 排除的资源名（系统自动生成的，不需要导出）
 EXCLUDE_NAMES="kube-root-ca.crt default"

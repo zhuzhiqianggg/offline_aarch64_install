@@ -27,13 +27,28 @@ else
 fi
 cd "$ROOT_DIR"
 
-# 加载版本锁定
+# 优先读取全局架构配置 (bundle 根目录的 arch.env 优先于 versions.lock 中的 ARCH)
+for _p in "$ROOT_DIR/arch.env" "$ROOT_DIR/../arch.env" "$ROOT_DIR/config/arch.env"; do
+  if [[ -f "$_p" ]]; then
+    # shellcheck disable=SC1090
+    source "$_p"
+    break
+  fi
+done
+
+# 加载版本锁定 (versions.lock 中的 ARCH 会被 arch.env 覆盖)
 if [[ -f "$ROOT_DIR/config/versions.lock" ]]; then
+  # 保存 arch.env 的 ARCH，防止 versions.lock 覆盖
+  _ARCH_FROM_ENV="${ARCH:-}"
   # shellcheck disable=SC1090
   source "$ROOT_DIR/config/versions.lock"
+  [[ -n "$_ARCH_FROM_ENV" ]] && ARCH="$_ARCH_FROM_ENV"
 else
   fatal "缺少版本锁定文件: $ROOT_DIR/config/versions.lock"
 fi
+
+ARCH="${ARCH:-$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')}"
+RPM_ARCH="${RPM_ARCH:-$(case "$ARCH" in arm64) echo aarch64;; amd64) echo x86_64;; esac)}"
 
 # 根据 ARCH 推导 OCI 平台
 case "$ARCH" in
@@ -42,7 +57,7 @@ case "$ARCH" in
   *) fatal "不支持的架构: $ARCH" ;;
 esac
 
-SEALOS="${ROOT_DIR}/bin/sealos"
+SEALOS="${ROOT_DIR}/bin/${ARCH}/sealos"
 
 # 已选择的 Master IP，供安装和 NFS StorageClass 复用
 SELECTED_MASTER_IP=""
@@ -154,11 +169,11 @@ check_prerequisites() {
     fi
   fi
 
-  if [[ ! -f "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" ]]; then
+  if [[ ! -f "${ROOT_DIR}/sealos-images/${ARCH}/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" ]]; then
     fatal "缺少 Kubernetes cluster image"
   fi
 
-  if [[ ! -f "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar" ]]; then
+  if [[ ! -f "${ROOT_DIR}/sealos-images/${ARCH}/calico-${CALICO_VERSION}-${ARCH}.tar" ]]; then
     fatal "缺少 Calico cluster image"
   fi
 
@@ -214,7 +229,7 @@ install_sealos_binary() {
 install_helm_binary() {
   log "安装 helm"
 
-  local helm_bin="${ROOT_DIR}/bin/helm"
+  local helm_bin="${ROOT_DIR}/bin/${ARCH}/helm"
   if [[ ! -f "$helm_bin" ]]; then
     warn "未找到 helm 二进制: $helm_bin，跳过"
     return 0
@@ -241,14 +256,14 @@ load_images() {
   # sealos load 可直接加载 OCI tar 包，不依赖 containerd 运行
   mkdir -p /var/lib/sealos 2>/dev/null || true
 
-  if [[ -f "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" ]]; then
+  if [[ -f "${ROOT_DIR}/sealos-images/${ARCH}/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar" ]]; then
     log "加载 Kubernetes cluster image"
-    sealos load -i "${ROOT_DIR}/sealos-images/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
+    sealos load -i "${ROOT_DIR}/sealos-images/${ARCH}/kubernetes-${KUBERNETES_VERSION}-${ARCH}.tar"
   fi
 
-  if [[ -f "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar" ]]; then
+  if [[ -f "${ROOT_DIR}/sealos-images/${ARCH}/calico-${CALICO_VERSION}-${ARCH}.tar" ]]; then
     log "加载 Calico cluster image"
-    sealos load -i "${ROOT_DIR}/sealos-images/calico-${CALICO_VERSION}-${ARCH}.tar"
+    sealos load -i "${ROOT_DIR}/sealos-images/${ARCH}/calico-${CALICO_VERSION}-${ARCH}.tar"
   fi
 }
 

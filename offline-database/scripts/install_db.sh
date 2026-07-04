@@ -35,11 +35,23 @@ detect_compose() {
 }
 
 ensure_compose() {
+  # 读取全局架构配置，定位 offline-docker/bin/${ARCH}/docker-compose
+  local arch=""
+  for _p in "$ROOT_DIR/../arch.env" "$ROOT_DIR/arch.env" "$ROOT_DIR/config/arch.env"; do
+    if [[ -f "$_p" ]]; then
+      # shellcheck disable=SC1090
+      source "$_p"
+      arch="${ARCH:-}"
+      break
+    fi
+  done
+  arch="${arch:-$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')}"
+
   local compose_src=""
   for candidate in \
-    /opt/install/offline-docker/bin/docker-compose \
-    "$ROOT_DIR/../offline-docker/bin/docker-compose" \
-    "$(dirname "$ROOT_DIR")/offline-docker/bin/docker-compose"; do
+    /opt/install/offline-docker/bin/${arch}/docker-compose \
+    "$ROOT_DIR/../offline-docker/bin/${arch}/docker-compose" \
+    "$(dirname "$ROOT_DIR")/offline-docker/bin/${arch}/docker-compose"; do
     if [[ -f "$candidate" ]]; then
       compose_src="$candidate"
       break
@@ -47,7 +59,7 @@ ensure_compose() {
   done
 
   if [[ -z "$compose_src" ]]; then
-    fatal "未找到可用的 compose 命令，且 offline-docker 包中无 docker-compose 二进制。"
+    fatal "未找到可用的 compose 命令，且 offline-docker 包中无 docker-compose 二进制 (arch=${arch})。"
   fi
 
   log "未检测到 compose，从 offline-docker 包自动安装: $compose_src"
