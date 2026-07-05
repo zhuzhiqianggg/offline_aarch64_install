@@ -65,7 +65,10 @@ install_docker_binary() {
   "log-opts": {
     "max-size": "100m",
     "max-file": "10"
-  }
+  },
+  "iptables": true,
+  "ip-forward": true,
+  "ip-masq": true
 }
 EOF
 
@@ -74,6 +77,10 @@ EOF
     warn "检测到旧版 BuildKit 缓存，清理中..."
     rm -rf /var/lib/docker/buildkit
   fi
+
+  # 加载内核模块 (docker 创建 bridge 网络需要)
+  modprobe br_netfilter 2>/dev/null || true
+  echo "br_netfilter" > /etc/modules-load.d/docker.conf 2>/dev/null || true
 
   cat > /etc/systemd/system/docker.service <<'EOF'
 [Unit]

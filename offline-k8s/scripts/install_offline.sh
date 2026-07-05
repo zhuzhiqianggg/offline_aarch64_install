@@ -860,6 +860,15 @@ main() {
     fatal "kubeconfig 文件不存在 ($KUBECONFIG)，集群安装可能未成功"
   fi
 
+  # 10.5 验证 image-cri-shim 已部署 (sealos run 会自动部署, 但需确认)
+  if ! systemctl is-active --quiet image-cri-shim 2>/dev/null; then
+    fatal "image-cri-shim 未运行, manifests 中的外部 registry 镜像将无法拉取"
+  fi
+  if ! curl -sf -m 5 -u admin:passw0rd http://sealos.hub:5000/v2/ >/dev/null 2>&1; then
+    fatal "sealos.hub:5000 registry 不可达, 部署将失败"
+  fi
+  log "image-cri-shim + sealos.hub:5000 registry 就绪"
+
   # 11. 导入应用镜像到 containerd（幂等操作，重复导入不会出错）
   load_app_images_to_containerd
 

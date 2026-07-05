@@ -90,10 +90,18 @@ configure_timezone() {
   log "步骤 7: 设置时区和时间同步"
   timedatectl set-timezone Asia/Shanghai 2>/dev/null || true
 
-  if command -v ntpdate >/dev/null 2>&1; then
-    ntpdate time1.aliyun.com 2>/dev/null || warn "  ntpdate 失败"
+  # 离线环境优先用 chrony 系统时间, 不主动同步远端 NTP 服务器
+  if command -v chronyc >/dev/null 2>&1; then
+    log "  使用 chrony (如已配置)"
+  elif command -v ntpdate >/dev/null 2>&1; then
+    # 仅在网络可达时尝试同步 (离线环境会失败, 但不影响安装)
+    if ntpdate -q time1.aliyun.com >/dev/null 2>&1; then
+      ntpdate time1.aliyun.com 2>/dev/null && log "  时间已同步" || warn "  ntpdate 同步失败"
+    else
+      log "  网络不可达, 跳过时间同步 (不影响 K8s 安装)"
+    fi
   else
-    log "  ntpdate 未安装，跳过时间同步"
+    log "  未安装时间同步工具, 跳过"
   fi
 }
 
