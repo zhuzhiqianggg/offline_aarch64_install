@@ -214,40 +214,56 @@ kubectl get pod test-nginx -w
 
 ## 5. Worker 节点加入（可选）
 
-如果你需要多节点 K8s 集群，在**额外的物理机/VM** 上加入 worker。
+如果你需要多节点 K8s 集群，**与 master 安装一致使用 sealos**。`add_worker.sh` 在 master 节点上执行，通过 SSH 远程部署 worker。
 
-### 5.1 在 master 节点生成 join 命令
+### 5.1 准备 SSH 免密登录
+
+sealos add 通过 SSH 登录 worker 节点。**在 master 节点**上执行：
+
+```bash
+# 1. 确保 master 节点已生成 SSH 密钥
+ls /root/.ssh/id_rsa
+
+# 2. 将 master 的公钥复制到所有 worker 节点
+ssh-copy-id root@<worker-ip>
+# 默认密码需要运维提供
+```
+
+### 5.2 在 master 节点执行 add_worker.sh
 
 ```bash
 # 在 K8s master 节点执行
-kubeadm token create --print-join-command
-# 输出示例:
-# kubeadm join 192.168.2.39:6443 --token abcdef.0123456789abcdef \
-#     --discovery-token-ca-cert-hash sha256:xxxxxxxxxxxx
+cd /opt/install/k8s-offline-openEuler-aarch64/scripts
+
+# 1. 添加单个 worker (默认 SSH 密钥登录)
+sudo bash add_worker.sh --nodes 192.168.1.101
+
+# 2. 添加多个 worker (逗号分隔)
+sudo bash add_worker.sh --nodes 192.168.1.101,192.168.1.102
+
+# 3. IP 范围
+sudo bash add_worker.sh --nodes 192.168.1.100-192.168.1.110
+
+# 4. 自定义 SSH 用户和密码
+sudo bash add_worker.sh --nodes 192.168.1.101 --user admin --passwd xxx
+
+# 5. 同时添加 master + worker (高可用)
+sudo bash add_worker.sh --masters 192.168.1.11 --nodes 192.168.1.101
+
+# 6. 自动确认 (跳过交互)
+sudo bash add_worker.sh -y --nodes 192.168.1.101
 ```
 
-### 5.2 在 worker 节点执行加入
+**sealos add 会自动**：
+- SSH 到 worker 节点
+- 安装 containerd / calico-host / kubelet / kube-proxy 等所有 K8s 组件
+- 加入集群并保持与 master 相同的 K8s 版本
 
-```bash
-# 在 worker 节点上
-cd /opt/install
-
-# 1. 解压 K8s 离线包（worker 只需要其中的 sealos-images 用于加载镜像）
-tar xzf k8s-offline-openEuler-aarch64-*.tar.gz
-cd k8s-offline-openEuler-aarch64
-
-# 2. 执行 join_worker.sh
-JOIN_CMD="kubeadm join 192.168.2.39:6443 --token abcdef.0123456789abcdef --discovery-token-ca-cert-hash sha256:xxxx" \
-  sudo bash scripts/join_worker.sh
-```
-
-### 5.3 验证
-
-```bash
-# 在 master 节点查看新 worker
-kubectl get nodes
-# 期望: 多个 Ready 节点
-```
+**注意**：
+- 脚本**只在 master 节点**运行，**不在 worker 上运行**
+- worker 节点无需任何准备（sealos 会自动部署）
+- 端口 22 (SSH) 必须在 worker 节点开放
+- master 与 worker 之间网络必须互通（推荐 1Gbps）
 
 ---
 
@@ -586,7 +602,7 @@ rm -rf /opt/install
 |------|------|
 | `/opt/install/arch.env` | 全局架构配置（ARCH=arm64\|amd64） |
 | `/opt/install/k8s-offline-openEuler-aarch64/install_offline.sh` | K8s 一键安装 |
-| `/opt/install/k8s-offline-openEuler-aarch64/scripts/join_worker.sh` | Worker 加入 |
+| `/opt/install/k8s-offline-openEuler-aarch64/scripts/add_worker.sh` | 在 master 上添加 worker 节点 (sealos add) |
 | `/opt/install/k8s-offline-openEuler-aarch64/scripts/cleanup_test_cluster.sh` | K8s 清理 |
 | `/opt/install/offline-docker-aarch64/install_docker_offline.sh` | Docker 安装 |
 | `/opt/install/offline-database-aarch64/scripts/install_db.sh` | 数据库部署入口 |
