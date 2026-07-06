@@ -491,9 +491,15 @@ remove_container_runtimes() {
   rm -f /etc/systemd/system/containerd.service /etc/systemd/system/containerd.socket 2>/dev/null || true
   rm -f /etc/systemd/system/docker.service /etc/systemd/system/docker.socket 2>/dev/null || true
 
+  # 移除 docker 二进制 (sealos run 检测到 PATH 中的 docker 会拒绝安装)
+  rm -f /usr/local/bin/docker /usr/local/bin/dockerd /usr/local/bin/docker-init /usr/local/bin/docker-proxy 2>/dev/null || true
+  rm -f /usr/bin/docker /usr/bin/dockerd /usr/bin/docker-init /usr/bin/docker-proxy 2>/dev/null || true
+  rm -f /usr/local/bin/docker-compose /usr/bin/docker-compose 2>/dev/null || true
+
   # 移除 socket 和运行时目录
   rm -rf /run/containerd /run/docker 2>/dev/null || true
   rm -rf /var/lib/containerd /var/lib/docker 2>/dev/null || true
+  rm -rf /etc/docker 2>/dev/null || true
 
   systemctl daemon-reload 2>/dev/null || true
 
