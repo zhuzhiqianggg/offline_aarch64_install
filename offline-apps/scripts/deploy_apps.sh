@@ -2,12 +2,18 @@
 # deploy_apps.sh - 在内网 K8s 集群部署业务应用
 # 用法: ./deploy_apps.sh
 #       SKIP_IMAGES=true ./deploy_apps.sh  # 跳过镜像导入
+#
+# 设计:
+#   - 镜像加载交给 load_apps.sh (按镜像列表逐个 ctr import)
+#   - 本脚本只负责部署 manifests/ 下的 K8s YAML
+#   - 命名空间 (namespace) 是 K8s 资源组织方式, 与镜像打包 (images.conf) 解耦
 
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 MANIFESTS_DIR="$ROOT_DIR/manifests"
 IMAGES_DIR="$ROOT_DIR/images"
+SCRIPTS_DIR="$ROOT_DIR/scripts"
 
 log()  { printf '[%s] INFO: %s\n' "$(date '+%F %T')" "$*"; }
 warn() { printf '[%s] WARN: %s\n' "$(date '+%F %T')" "$*"; }
@@ -24,28 +30,23 @@ check_deps() {
   log "依赖检查通过"
 }
 
-# ─── 导入镜像到 containerd ───
+# ─── 导入镜像到 containerd (委托给 load_apps.sh) ───
 import_images() {
   if [[ "${SKIP_IMAGES:-false}" == "true" ]]; then
     log "跳过镜像导入 (SKIP_IMAGES=true)"
     return
   fi
 
-  local tar_file="$IMAGES_DIR/app-images.tar"
-  if [[ ! -f "$tar_file" ]]; then
-    warn "镜像包不存在: $tar_file，跳过镜像导入"
+  local load_script="$SCRIPTS_DIR/load_apps.sh"
+  if [[ ! -f "$load_script" ]]; then
+    warn "load_apps.sh 不存在: $load_script, 跳过镜像导入"
     return
   fi
 
-  # 校验 sha256
-  local sha_file="$IMAGES_DIR/app-images.tar.sha256"
-  if [[ -f "$sha_file" ]]; then
-    log "校验镜像包完整性..."
-    (cd "$IMAGES_DIR" && sha256sum -c app-images.tar.sha256) || fatal "镜像包校验失败"
+  log "调用 load_apps.sh 导入镜像..."
+  if ! bash "$load_script"; then
+    fatal "load_apps.sh 失败, 中止部署"
   fi
-
-  log "导入镜像到 containerd..."
-  ctr -n k8s.io images import "$tar_file" 2>&1 || fatal "镜像导入失败"
   log "镜像导入完成"
 }
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# load_app_images.sh - 离线环境导入业务应用镜像到 K8s 节点
+# load_apps.sh - 离线环境导入业务应用镜像到 K8s 节点
 #
 # 用法:
-#   ./scripts/load_app_images.sh              # 导入全部镜像
-#   FORCE_LOAD=1 ./scripts/load_app_images.sh # 强制重新导入(忽略已存在)
-#   CONTAINERD_SOCK=/run/containerd/containerd.sock ./scripts/load_app_images.sh
+#   ./scripts/load_apps.sh              # 导入全部镜像
+#   FORCE_LOAD=1 ./scripts/load_apps.sh # 强制重新导入(忽略已存在)
+#   CONTAINERD_SOCK=/run/containerd/containerd.sock ./scripts/load_apps.sh
 #
 # 特性:
 #   - 自动识别 containerd(ctr) 或 docker 运行时

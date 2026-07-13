@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# pack_app_images.sh - 在线机器执行：按镜像清单拉取、导出、打包业务镜像离线包
+# pack_apps.sh - 在线机器执行：按镜像清单拉取、导出、打包业务镜像离线包
 #
 # 用法:
-#   ./scripts/pack_app_images.sh              # 读取 ../images.conf
-#   CONF_FILE=/path/to/list.conf ./scripts/pack_app_images.sh
-#   FORCE_PULL=1 ./scripts/pack_app_images.sh # 强制重新拉取(忽略已存在的 tar)
+#   ./scripts/pack_apps.sh              # 读取 ../images.conf
+#   CONF_FILE=/path/to/list.conf ./scripts/pack_apps.sh
+#   FORCE_PULL=1 ./scripts/pack_apps.sh # 强制重新拉取(忽略已存在的 tar)
 #
 # 产出: bundle/offline-app-images-<arch>-<timestamp>.tar.gz
-#       包内自带 load_app_images.sh，传到离线节点解压后一键执行即可导入。
+#       包内自带 load_apps.sh，传到离线节点解压后一键执行即可导入。
 #
 # 关键设计:
 #   - 镜像保留完整 registry 地址 (docker save 的 RepoTags 不变)
@@ -44,7 +44,7 @@ fatal(){ printf '[%s] ERROR: %s\n' "$(date '+%F %T')" "$*"; exit 1; }
 
 command -v docker >/dev/null 2>&1 || fatal "缺少 docker 命令"
 [[ -f "$CONF_FILE" ]] || fatal "缺少镜像清单: $CONF_FILE"
-[[ -f "$SCRIPTS_DIR/load_app_images.sh" ]] || fatal "缺少 load_app_images.sh: $SCRIPTS_DIR/load_app_images.sh"
+[[ -f "$SCRIPTS_DIR/load_apps.sh" ]] || fatal "缺少 load_apps.sh: $SCRIPTS_DIR/load_apps.sh"
 
 mkdir -p "$IMAGES_DIR" "$BUNDLE_DIR"
 
@@ -199,8 +199,8 @@ done < "$IMAGES_DIR/images.list"
 cp "$IMAGES_DIR/images.list" "$STAGING_DIR/images/images.list"
 
 # 复制 load 脚本
-cp "$SCRIPTS_DIR/load_app_images.sh" "$STAGING_DIR/scripts/load_app_images.sh"
-chmod +x "$STAGING_DIR/scripts/load_app_images.sh"
+cp "$SCRIPTS_DIR/load_apps.sh" "$STAGING_DIR/scripts/load_apps.sh"
+chmod +x "$STAGING_DIR/scripts/load_apps.sh"
 
 # VERSION.txt
 cat > "$STAGING_DIR/VERSION.txt" <<EOF
@@ -215,11 +215,11 @@ cat > "$STAGING_DIR/VERSION.txt" <<EOF
   images/*.tar           各镜像 tar 包 (docker-archive 格式，保留完整 registry 地址)
   images/images.list     镜像完整引用清单 (导入与校验依据)
   images/sha256sum.txt   tar 文件 sha256 校验
-  scripts/load_app_images.sh  离线导入脚本
+  scripts/load_apps.sh  离线导入脚本
 
 离线环境使用:
   1. 解压: tar -xzf ${STAGING_NAME}-*.tar.gz
-  2. 导入(每个 k8s 节点执行): cd ${STAGING_NAME} && ./scripts/load_app_images.sh
+  2. 导入(每个 k8s 节点执行): cd ${STAGING_NAME} && ./scripts/load_apps.sh
   3. K8s 清单中 image 字段保持原样，设置 imagePullPolicy: IfNotPresent
 
 注意:
@@ -257,7 +257,7 @@ log "镜像数: ${copied} (失败 ${failed})"
 echo ""
 log "传输到离线环境后:"
 log "  1. 解压: tar -xzf $(basename "$ARCHIVE")"
-log "  2. 导入: cd ${STAGING_NAME} && ./scripts/load_app_images.sh"
+log "  2. 导入: cd ${STAGING_NAME} && ./scripts/load_apps.sh"
 log "========================================"
 
 if [[ "$failed" -gt 0 ]]; then
